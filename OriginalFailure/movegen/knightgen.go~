@@ -1,0 +1,58 @@
+package movegen
+
+import (
+	"chess/bb"
+)
+
+func WhiteKnightMoves(state GameState) []GameState {
+	knights := state.white.knights 
+	black := state.black.AllPieces()
+	white := state.white.AllPieces()
+	states := make([]GameState, 0)
+
+	lsb := bb.Lsb(knights)
+	for ; knights != bb.Empty; {
+		mask := bb.KnightAttack(lsb)
+		moves := mask &^ (black & white)
+		move := bb.Lsb(moves)
+		
+		for ; moves != bb.Empty; {
+			newState := state
+			newState.white.knights = (newState.white.knights &^ lsb) | move
+			states = append(states, newState)
+			moves = moves &^ move
+			move = bb.Lsb(moves)
+		}
+
+		knights = knights &^ lsb
+		lsb = bb.Lsb(knights)
+	}
+	return states
+}
+
+func BlackKnightMoves(state GameState) []GameState {
+	knights := state.black.knights 
+	black := state.black.AllPieces()
+	white := state.white.AllPieces()
+	states := make([]GameState, 0)
+
+	lsb := bb.Lsb(knights)
+	for ; knights != bb.Empty; {
+		mask := bb.KnightAttack(lsb)
+		moves := mask &^ (black & white)
+		move := bb.Lsb(moves)
+		
+		for ; moves != bb.Empty; {
+			newState := state
+			newState.black.knights = (newState.black.knights &^ lsb) | move
+			states = append(states, newState)
+			moves = moves &^ move
+			move = bb.Lsb(moves)
+		}
+
+		knights = knights &^ lsb
+		lsb = bb.Lsb(knights)
+	}
+	return states
+}
+

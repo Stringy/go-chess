@@ -1,0 +1,30 @@
+package main 
+
+import (
+	"runtime"
+	"bufio"
+	"fmt"
+	"os"
+	"chess/testing/commands"
+)
+
+func main() {
+	fmt.Println("Chess Engine Interactive Test Bed")
+	fmt.Println("type \"help\" for command list")
+
+	runtime.GOMAXPROCS(runtime.NumCPU())
+	
+	reader := bufio.NewReader(os.Stdin)
+	var line string
+	for {
+		line = ""
+		fmt.Print(">>> ")
+		line, _ = reader.ReadString('\n')
+		cmd, err := commands.ParseCommandLine(line)
+		if err != nil {
+			fmt.Println(err)
+		} else {
+			cmd.Exec()
+		}
+	}
+}

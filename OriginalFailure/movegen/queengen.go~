@@ -1,0 +1,59 @@
+package movegen 
+
+import (
+	"chess/bb"
+)
+
+func WhiteQueenMoves(state GameState) []GameState {
+	queens := state.white.queens
+	black := state.black.AllPieces()
+	white := state.white.AllPieces()
+	states := make([]GameState, 0)
+
+	lsb := bb.Lsb(queens)
+
+	for ; queens != bb.Empty; {
+		mask := bb.QueenAttack(lsb)
+		moves := mask &^ (black & white)
+		move := bb.Lsb(moves)
+
+		for ; moves != bb.Empty; {
+			newState := state
+			newState.white.queens = (newState.white.queens &^ lsb) | move
+			states = append(states, newState)
+			moves = moves &^ move
+			move = bb.Lsb(moves)
+		}
+
+		queens = queens &^ lsb
+		lsb = bb.Lsb(queens)
+	}
+	return states
+}
+
+func BlackQueenMoves(state GameState) []GameState {
+	queens := state.black.queens
+	black := state.black.AllPieces()
+	white := state.white.AllPieces()
+	states := make([]GameState, 0)
+
+	lsb := bb.Lsb(queens)
+
+	for ; queens != bb.Empty; {
+		mask := bb.QueenAttack(lsb)
+		moves := mask &^ (black & white)
+		move := bb.Lsb(moves)
+
+		for ; moves != bb.Empty; {
+			newState := state
+			newState.black.queens = (newState.black.queens &^ lsb) | move
+			states = append(states, newState)
+			moves = moves &^ move
+			move = bb.Lsb(moves)
+		}
+
+		queens = queens &^ lsb
+		lsb = bb.Lsb(queens)
+	}
+	return states
+}

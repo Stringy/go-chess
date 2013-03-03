@@ -1,0 +1,13 @@
+package be
+
+import (
+
+)
+
+func GetBestMove(b *Board) Move {
+
+}
+
+func alphabeta(b *Board, a uint, b uint, depth int, res chan Move) {
+
+}

@@ -1,0 +1,212 @@
+<!--
+	Copyright 2009 The Go Authors. All rights reserved.
+	Use of this source code is governed by a BSD-style
+	license that can be found in the LICENSE file.
+-->
+
+	
+		<div id="short-nav">
+			<dl>
+			<dd><code>import "chess/ai/eval"</code></dd>
+			</dl>
+			<dl>
+			<dd><a href="#overview" class="overviewLink">Overview</a></dd>
+			<dd><a href="#index">Index</a></dd>
+			
+			
+			</dl>
+		</div>
+		<!-- The package's Name is printed as title by the top-level template -->
+		<div id="overview" class="toggleVisible">
+			<div class="collapsed">
+				<h2 class="toggleButton" title="Click to show Overview section">Overview ▹</h2>
+			</div>
+			<div class="expanded">
+				<h2 class="toggleButton" title="Click to hide Overview section">Overview ▾</h2>
+				
+			</div>
+		</div>
+		
+	
+		<h2 id="index">Index</h2>
+		<!-- Table of contents for API; must be named manual-nav to turn off auto nav. -->
+		<div id="manual-nav">
+			<dl>
+			
+			
+				<dd><a href="#variables">Variables</a></dd>
+			
+			
+				
+				<dd><a href="#Eval">func Eval(b *gen.Board) int</a></dd>
+			
+			
+				
+				<dd><a href="#EvalFunc">type EvalFunc</a></dd>
+				
+				
+			
+				
+				<dd><a href="#FirstEval">type FirstEval</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#FirstEval.Eval">func (f *FirstEval) Eval(b *gen.Board) int</a></dd>
+				
+			
+			
+		</dl>
+
+		
+
+		
+			<h4>Package files</h4>
+			<p>
+			<span style="font-size:90%">
+			
+				<a href="/target/eval.go">eval.go</a>
+			
+				<a href="/target/first.go">first.go</a>
+			
+				<a href="/target/globals.go">globals.go</a>
+			
+				<a href="/target/heuristic.go">heuristic.go</a>
+			
+			</span>
+			</p>
+		
+	
+		
+		
+			<h2 id="variables">Variables</h2>
+			
+				<pre>var (
+    PawnTable = []int{
+        0, 0, 0, 0, 0, 0, 0, 0,
+        50, 50, 50, 50, 50, 50, 50, 50,
+        10, 10, 20, 30, 30, 20, 10, 10,
+        5, 5, 10, 27, 27, 10, 5, 5,
+        0, 0, 0, 25, 25, 0, 0, 0,
+        5, -5, -10, 0, 0, -10, -5, 5,
+        5, 10, 10, -25, -25, 10, 10, 5,
+        0, 0, 0, 0, 0, 0, 0, 0,
+    }
+
+    KnightTable = []int{
+        -50, -40, -30, -30, -30, -30, -40, -50,
+        -40, -20, 0, 0, 0, 0, -20, -40,
+        -30, 0, 10, 15, 15, 10, 0, -30,
+        -30, 5, 15, 20, 20, 15, 5, -30,
+        -30, 0, 15, 20, 20, 15, 0, -30,
+        -30, 5, 10, 15, 15, 10, 5, -30,
+        -40, -20, 0, 5, 5, 0, -20, -40,
+        -50, -40, -20, -30, -30, -20, -40, -50,
+    }
+
+    BishopTable = []int{
+        -20, -10, -10, -10, -10, -10, -10, -20,
+        -10, 0, 0, 0, 0, 0, 0, -10,
+        -10, 0, 5, 10, 10, 5, 0, -10,
+        -10, 5, 5, 10, 10, 5, 5, -10,
+        -10, 0, 10, 10, 10, 10, 0, -10,
+        -10, 10, 10, 10, 10, 10, 10, -10,
+        -10, 5, 0, 0, 0, 0, 5, -10,
+        -20, -10, -40, -10, -10, -40, -10, -20,
+    }
+
+    KingTable = []int{
+        -30, -40, -40, -50, -50, -40, -40, -30,
+        -30, -40, -40, -50, -50, -40, -40, -30,
+        -30, -40, -40, -50, -50, -40, -40, -30,
+        -30, -40, -40, -50, -50, -40, -40, -30,
+        -20, -30, -30, -40, -40, -30, -30, -20,
+        -10, -20, -20, -20, -20, -20, -20, -10,
+        20, 20, 0, 0, 0, 0, 20, 20,
+        20, 30, 10, 0, 0, 10, 30, 20,
+    }
+
+    KingEndGame = []int{
+        -50, -40, -30, -20, -20, -30, -40, -50,
+        -30, -20, -10, 0, 0, -10, -20, -30,
+        -30, -10, 20, 30, 30, 20, -10, -30,
+        -30, -10, 30, 40, 40, 30, -10, -30,
+        -30, -10, 30, 40, 40, 30, -10, -30,
+        -30, -10, 20, 30, 30, 20, -10, -30,
+        -30, -30, 0, 0, 0, 0, -30, -30,
+        -50, -30, -30, -30, -30, -30, -30, -50,
+    }
+
+    <span class="comment">//Piece Values</span>
+    PawnVal   = 100
+    KnightVal = 320
+    BishopVal = 325
+    RookVal   = 500
+    QueenVal  = 975
+    KingVal   = 32767
+)</pre>
+				
+			
+		
+		
+			
+			
+			<h2 id="Eval">func <a href="/target/heuristic.go?s=533:560#L36">Eval</a></h2>
+			<pre>func Eval(b *gen.Board) int</pre>
+			
+			
+		
+		
+			
+			
+			<h2 id="EvalFunc">type <a href="/target/eval.go?s=55:104#L1">EvalFunc</a></h2>
+			<pre>type EvalFunc interface {
+    Eval(*gen.Board) int
+}</pre>
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+		
+			
+			
+			<h2 id="FirstEval">type <a href="/target/first.go?s=43:79#L1">FirstEval</a></h2>
+			<pre>type FirstEval struct {
+    <span class="comment">// contains filtered or unexported fields</span>
+}</pre>
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+				
+				<h3 id="FirstEval.Eval">func (*FirstEval) <a href="/target/first.go?s=81:123#L1">Eval</a></h3>
+				<pre>func (f *FirstEval) Eval(b *gen.Board) int</pre>
+				
+				
+				
+			
+		
+		</div>
+	
+
+	
+
+
+
+
+
+
+

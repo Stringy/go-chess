@@ -1,0 +1,1750 @@
+<!--
+	Copyright 2009 The Go Authors. All rights reserved.
+	Use of this source code is governed by a BSD-style
+	license that can be found in the LICENSE file.
+-->
+
+	
+		<div id="short-nav">
+			<dl>
+			<dd><code>import "chess/ai/gen"</code></dd>
+			</dl>
+			<dl>
+			<dd><a href="#overview" class="overviewLink">Overview</a></dd>
+			<dd><a href="#index">Index</a></dd>
+			
+			
+			</dl>
+		</div>
+		<!-- The package's Name is printed as title by the top-level template -->
+		<div id="overview" class="toggleVisible">
+			<div class="collapsed">
+				<h2 class="toggleButton" title="Click to show Overview section">Overview ▹</h2>
+			</div>
+			<div class="expanded">
+				<h2 class="toggleButton" title="Click to hide Overview section">Overview ▾</h2>
+				<p>
+Package gen is responsible for generating a list of moves for a particular game state.
+It uses bitboards to contain the information regarding each piece type and a single 32 bit integer
+to contain movement information. It is only designed to generate from a single state, to a depth of one.
+Any further than this must be extended outside of this package.
+</p>
+
+			</div>
+		</div>
+		
+	
+		<h2 id="index">Index</h2>
+		<!-- Table of contents for API; must be named manual-nav to turn off auto nav. -->
+		<div id="manual-nav">
+			<dl>
+			
+				<dd><a href="#constants">Constants</a></dd>
+			
+			
+				<dd><a href="#variables">Variables</a></dd>
+			
+			
+				
+				<dd><a href="#BitCount">func BitCount(n uint64) uint</a></dd>
+			
+				
+				<dd><a href="#FirstOne">func FirstOne(n uint64) uint</a></dd>
+			
+				
+				<dd><a href="#Generate">func Generate(depth int, b *Board) []Move</a></dd>
+			
+				
+				<dd><a href="#GenerateAllMoves">func GenerateAllMoves(b *Board) []Move</a></dd>
+			
+				
+				<dd><a href="#InitAllData">func InitAllData()</a></dd>
+			
+				
+				<dd><a href="#InitialiseAllMasks">func InitialiseAllMasks()</a></dd>
+			
+				
+				<dd><a href="#LastOne">func LastOne(n uint64) (result uint)</a></dd>
+			
+				
+				<dd><a href="#PrintBitboard">func PrintBitboard(n uint64)</a></dd>
+			
+				
+				<dd><a href="#ReverseUint64">func ReverseUint64(n uint64) uint64</a></dd>
+			
+				
+				<dd><a href="#bishopMoves">func bishopMoves(b *Board, from uint) uint64</a></dd>
+			
+				
+				<dd><a href="#diagA1H8Moves">func diagA1H8Moves(b *Board, from uint) uint64</a></dd>
+			
+				
+				<dd><a href="#diagA8H1Moves">func diagA8H1Moves(b *Board, from uint) uint64</a></dd>
+			
+				
+				<dd><a href="#fileMoves">func fileMoves(b *Board, from uint) uint64</a></dd>
+			
+				
+				<dd><a href="#generateBlackKingMoves">func generateBlackKingMoves(b *Board) []Move</a></dd>
+			
+				
+				<dd><a href="#generateBlackPawnMoves">func generateBlackPawnMoves(b *Board) []Move</a></dd>
+			
+				
+				<dd><a href="#generateKnightMoves">func generateKnightMoves(b *Board, id byte, pieces uint64) []Move</a></dd>
+			
+				
+				<dd><a href="#generateSlidingMoves">func generateSlidingMoves(b *Board, id byte, pieces uint64, moveGen func(*Board, uint) uint64) []Move</a></dd>
+			
+				
+				<dd><a href="#generateWhiteKingMoves">func generateWhiteKingMoves(b *Board) []Move</a></dd>
+			
+				
+				<dd><a href="#generateWhitePawnMoves">func generateWhitePawnMoves(b *Board) []Move</a></dd>
+			
+				
+				<dd><a href="#init">func init()</a></dd>
+			
+				
+				<dd><a href="#initBitSet">func initBitSet()</a></dd>
+			
+				
+				<dd><a href="#initBoardIndices">func initBoardIndices()</a></dd>
+			
+				
+				<dd><a href="#initMsbTable">func initMsbTable()</a></dd>
+			
+				
+				<dd><a href="#initSquareMasks">func initSquareMasks()</a></dd>
+			
+				
+				<dd><a href="#initialiseA1H8Masks">func initialiseA1H8Masks(sq, state int)</a></dd>
+			
+				
+				<dd><a href="#initialiseA8H1Masks">func initialiseA8H1Masks(sq, state int)</a></dd>
+			
+				
+				<dd><a href="#initialiseAttackMasks">func initialiseAttackMasks()</a></dd>
+			
+				
+				<dd><a href="#initialiseBlackPawnMovesAndAttacks">func initialiseBlackPawnMovesAndAttacks(sq int)</a></dd>
+			
+				
+				<dd><a href="#initialiseCharBitSet">func initialiseCharBitSet()</a></dd>
+			
+				
+				<dd><a href="#initialiseDiagA1H8Magic">func initialiseDiagA1H8Magic()</a></dd>
+			
+				
+				<dd><a href="#initialiseDiagA8H1">func initialiseDiagA8H1()</a></dd>
+			
+				
+				<dd><a href="#initialiseFileAttacks">func initialiseFileAttacks(sq, state int)</a></dd>
+			
+				
+				<dd><a href="#initialiseFileMagic">func initialiseFileMagic()</a></dd>
+			
+				
+				<dd><a href="#initialiseFileMask">func initialiseFileMask()</a></dd>
+			
+				
+				<dd><a href="#initialiseGeneralSlidingAttacks">func initialiseGeneralSlidingAttacks()</a></dd>
+			
+				
+				<dd><a href="#initialiseKingAttacks">func initialiseKingAttacks(sq int)</a></dd>
+			
+				
+				<dd><a href="#initialiseKnightAttacks">func initialiseKnightAttacks(sq int)</a></dd>
+			
+				
+				<dd><a href="#initialiseRankAttacks">func initialiseRankAttacks(sq, state int)</a></dd>
+			
+				
+				<dd><a href="#initialiseRankMask">func initialiseRankMask()</a></dd>
+			
+				
+				<dd><a href="#initialiseWhitePawnMovesAndAttacks">func initialiseWhitePawnMovesAndAttacks(sq int)</a></dd>
+			
+				
+				<dd><a href="#isAttacked">func isAttacked(b *Board, bits uint64, attacker byte) bool</a></dd>
+			
+				
+				<dd><a href="#myappend">func myappend(total []Move, n *int, moves ...Move) []Move</a></dd>
+			
+				
+				<dd><a href="#queenMoves">func queenMoves(b *Board, from uint) uint64</a></dd>
+			
+				
+				<dd><a href="#rankMoves">func rankMoves(b *Board, from uint) uint64</a></dd>
+			
+				
+				<dd><a href="#rookMoves">func rookMoves(b *Board, from uint) uint64</a></dd>
+			
+			
+				
+				<dd><a href="#Board">type Board</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#Board.Clone">func (b *Board) Clone() *Board</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#Board.Init">func (b *Board) Init()</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#Board.InitFromGrid">func (b *Board) InitFromGrid(grid []byte, moves, ep int, cw, cb, next byte)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#Board.MakeMove">func (b *Board) MakeMove(move *Move)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#Board.PrintBoard">func (b *Board) PrintBoard()</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#Board.UnmakeMove">func (b *Board) UnmakeMove(move *Move)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#Board.makeBlackKingMove">func (b *Board) makeBlackKingMove(move *Move)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#Board.makeBlackPawnMove">func (b *Board) makeBlackPawnMove(move *Move)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#Board.makeBlackProm">func (b *Board) makeBlackProm(prom, to byte)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#Board.makeBlackRookMove">func (b *Board) makeBlackRookMove(move *Move)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#Board.makeCapture">func (b *Board) makeCapture(capt, to byte)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#Board.makeGenericMove">func (b *Board) makeGenericMove(move *Move, pieces *uint64, colour *uint64)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#Board.makeWhiteKingMove">func (b *Board) makeWhiteKingMove(move *Move)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#Board.makeWhitePawnMove">func (b *Board) makeWhitePawnMove(move *Move)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#Board.makeWhiteProm">func (b *Board) makeWhiteProm(piece, to byte)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#Board.makeWhiteRookMove">func (b *Board) makeWhiteRookMove(move *Move)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#Board.unmakeBlackKingMove">func (b *Board) unmakeBlackKingMove(move *Move)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#Board.unmakeBlackPawnMove">func (b *Board) unmakeBlackPawnMove(move *Move)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#Board.unmakeBlackProm">func (b *Board) unmakeBlackProm(prom, to byte)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#Board.unmakeBlackRookMove">func (b *Board) unmakeBlackRookMove(move *Move)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#Board.unmakeCapture">func (b *Board) unmakeCapture(capt, to byte)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#Board.unmakeGenericMove">func (b *Board) unmakeGenericMove(move *Move, pieces *uint64, colour *uint64)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#Board.unmakeWhiteKingMove">func (b *Board) unmakeWhiteKingMove(move *Move)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#Board.unmakeWhitePawnMove">func (b *Board) unmakeWhitePawnMove(move *Move)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#Board.unmakeWhiteProm">func (b *Board) unmakeWhiteProm(piece, to byte)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#Board.unmakeWhiteRookMove">func (b *Board) unmakeWhiteRookMove(move *Move)</a></dd>
+				
+			
+				
+				<dd><a href="#Move">type Move</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#Move.Clear">func (m *Move) Clear()</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#Move.GetCapt">func (m *Move) GetCapt() byte</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#Move.GetFrom">func (m *Move) GetFrom() byte</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#Move.GetPiece">func (m *Move) GetPiece() byte</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#Move.GetProm">func (m *Move) GetProm() byte</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#Move.GetTo">func (m *Move) GetTo() byte</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#Move.IsBlackmove">func (m *Move) IsBlackmove() bool</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#Move.IsCapture">func (m *Move) IsCapture() bool</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#Move.IsCastle">func (m *Move) IsCastle() bool</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#Move.IsCastleOO">func (m *Move) IsCastleOO() bool</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#Move.IsCastleOOO">func (m *Move) IsCastleOOO() bool</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#Move.IsEnpassant">func (m *Move) IsEnpassant() bool</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#Move.IsKingcaptured">func (m *Move) IsKingcaptured() bool</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#Move.IsKingmove">func (m *Move) IsKingmove() bool</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#Move.IsPawnDoublemove">func (m *Move) IsPawnDoublemove() bool</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#Move.IsPawnmove">func (m *Move) IsPawnmove() bool</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#Move.IsPromotion">func (m *Move) IsPromotion() bool</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#Move.IsRookcaptured">func (m *Move) IsRookcaptured() bool</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#Move.IsRookmove">func (m *Move) IsRookmove() bool</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#Move.IsWhitemove">func (m *Move) IsWhitemove() bool</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#Move.Print">func (m *Move) Print() (ret string)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#Move.SetCapt">func (m *Move) SetCapt(capt byte)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#Move.SetFrom">func (m *Move) SetFrom(from byte)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#Move.SetPiece">func (m *Move) SetPiece(piece byte)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#Move.SetProm">func (m *Move) SetProm(prom byte)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#Move.SetTo">func (m *Move) SetTo(to byte)</a></dd>
+				
+			
+			
+		</dl>
+
+		
+
+		
+			<h4>Package files</h4>
+			<p>
+			<span style="font-size:90%">
+			
+				<a href="/target/attackmasks.go">attackmasks.go</a>
+			
+				<a href="/target/bitmanip.go">bitmanip.go</a>
+			
+				<a href="/target/board.go">board.go</a>
+			
+				<a href="/target/gen.go">gen.go</a>
+			
+				<a href="/target/globals.go">globals.go</a>
+			
+				<a href="/target/move.go">move.go</a>
+			
+				<a href="/target/movegenerator.go">movegenerator.go</a>
+			
+				<a href="/target/movement.go">movement.go</a>
+			
+			</span>
+			</p>
+		
+	
+		
+			<h2 id="constants">Constants</h2>
+			
+				<pre>const (
+    <span class="comment">//Empty bitboard for various calculations</span>
+    Emp = uint64(0)
+    <span class="comment">//universal bitboard for calculating unoccupied squares</span>
+    Universe = uint64(0xffffffffffffffff)
+)</pre>
+				
+			
+				<pre>const (
+    MaxMoves = 4096
+    MaxPly   = 64
+
+    <span class="comment">//Square Indexes</span>
+    A1 = 0
+    A2 = 8
+    A3 = 16
+    A4 = 24
+    A5 = 32
+    A6 = 40
+    A7 = 48
+    A8 = 56
+    B1 = 1
+    B2 = 9
+    B3 = 17
+    B4 = 25
+    B5 = 33
+    B6 = 41
+    B7 = 49
+    B8 = 57
+    C1 = 2
+    C2 = 10
+    C3 = 18
+    C4 = 26
+    C5 = 34
+    C6 = 42
+    C7 = 50
+    C8 = 58
+    D1 = 3
+    D2 = 11
+    D3 = 19
+    D4 = 27
+    D5 = 35
+    D6 = 43
+    D7 = 51
+    D8 = 59
+    E1 = 4
+    E2 = 12
+    E3 = 20
+    E4 = 28
+    E5 = 36
+    E6 = 44
+    E7 = 52
+    E8 = 60
+    F1 = 5
+    F2 = 13
+    F3 = 21
+    F4 = 29
+    F5 = 37
+    F6 = 45
+    F7 = 53
+    F8 = 61
+    G1 = 6
+    G2 = 14
+    G3 = 22
+    G4 = 30
+    G5 = 38
+    G6 = 46
+    G7 = 54
+    G8 = 62
+    H1 = 7
+    H2 = 15
+    H3 = 23
+    H4 = 31
+    H5 = 39
+    H6 = 47
+    H7 = 55
+    H8 = 63
+
+    <span class="comment">//Move Identifiers</span>
+    WhiteMove = 0
+    BlackMove = 1
+
+    <span class="comment">/*
+        Piece Identifiers
+        4 bits per pieces
+        Properties:
+         white = 0...
+         black = 1...
+         sliding = .1..
+    */</span>
+    Empty       = byte(0) <span class="comment">//0000</span>
+    WhitePawn   = byte(1) <span class="comment">//0001</span>
+    WhiteKing   = byte(2) <span class="comment">//0010</span>
+    WhiteKnight = byte(3) <span class="comment">//0011</span>
+    WhiteBishop = byte(5) <span class="comment">//0101</span>
+    WhiteRook   = byte(6) <span class="comment">//0110</span>
+    WhiteQueen  = byte(7) <span class="comment">//0111</span>
+
+    BlackPawn   = byte(9)  <span class="comment">//1001</span>
+    BlackKing   = byte(10) <span class="comment">//1010</span>
+    BlackKnight = byte(11) <span class="comment">//1011</span>
+    BlackBishop = byte(13) <span class="comment">//1101</span>
+    BlackRook   = byte(14) <span class="comment">//1110</span>
+    BlackQueen  = byte(15)
+
+    <span class="comment">//Piece Values</span>
+    <span class="comment">//used for evaluation in decision making</span>
+    PawnValue   = 100
+    KnightValue = 300
+    BishopValue = 300
+    RookValue   = 500
+    QueenValue  = 900
+    KingValue   = 9999
+    CheckMate   = KingValue
+
+    <span class="comment">//Castling Constants</span>
+    CanCastleOO  = byte(1)
+    CanCastleOOO = byte(2)
+)</pre>
+				
+			
+				<pre>const (
+    averageNumMoves = 45
+)</pre>
+				
+			
+		
+		
+			<h2 id="variables">Variables</h2>
+			
+				<pre>var (
+    <span class="comment">//Pawn Attack / Move Masks</span>
+    WhitePawnAttacks     = make([]uint64, 64)
+    WhitePawnMoves       = make([]uint64, 64)
+    WhitePawnDoubleMoves = make([]uint64, 64)
+
+    BlackPawnAttacks     = make([]uint64, 64)
+    BlackPawnMoves       = make([]uint64, 64)
+    BlackPawnDoubleMoves = make([]uint64, 64)
+
+    <span class="comment">//Other Piece Attacks</span>
+    KingAttacks     = make([]uint64, 64)
+    KnightAttacks   = make([]uint64, 64)
+    RankAttacks     = [64][64]uint64{} <span class="comment">//for rooks</span>
+    FileAttacks     = [64][64]uint64{} <span class="comment">//for rooks</span>
+    DiagA1H8Attacks = [64][64]uint64{} <span class="comment">//for bishops</span>
+    DiagA8H1Attacks = [64][64]uint64{} <span class="comment">//for bishops</span>
+
+    RankMask      = make([]uint64, 64)
+    FileMask      = make([]uint64, 64)
+    FileMagic     = make([]uint64, 64)
+    DiagA8H1Mask  = make([]uint64, 64)
+    DiagA8H1Magic = make([]uint64, 64)
+    DiagA1H8Mask  = make([]uint64, 64)
+    DiagA1H8Magic = make([]uint64, 64)
+
+    GeneralSlidingAttacks = [8][64]uint64{}
+
+    MaskEG = make([]uint64, 2)
+    MaskFG = make([]uint64, 2)
+    MaskBD = make([]uint64, 2)
+    MaskCE = make([]uint64, 2)
+
+    CharBitSet = make([]byte, 8)
+
+    RankShift = []int{
+        1, 1, 1, 1, 1, 1, 1, 1,
+        9, 9, 9, 9, 9, 9, 9, 9,
+        17, 17, 17, 17, 17, 17, 17, 17,
+        25, 25, 25, 25, 25, 25, 25, 25,
+        33, 33, 33, 33, 33, 33, 33, 33,
+        41, 41, 41, 41, 41, 41, 41, 41,
+        49, 49, 49, 49, 49, 49, 49, 49,
+        57, 57, 57, 57, 57, 57, 57, 57,
+    }
+
+    <span class="comment">//File Magic Bitboard Mask</span>
+    FileMagicMask = []uint64{
+        0x8040201008040200,
+        0x4020100804020100,
+        0x2010080402010080,
+        0x1008040201008040,
+        0x0804020100804020,
+        0x0402010080402010,
+        0x0201008040201008,
+        0x0100804020100804,
+    }
+
+    <span class="comment">//A8 H1 Diagonal Magic bitboard mask</span>
+    DiagA8H1MagicMask = []uint64{
+        0x0,
+        0x0,
+        0x0101010101010100,
+        0x0101010101010100,
+        0x0101010101010100,
+        0x0101010101010100,
+        0x0101010101010100,
+        0x0101010101010100,
+        0x0080808080808080,
+        0x0040404040404040,
+        0x0020202020202020,
+        0x0010101010101010,
+        0x0008080808080808,
+        0x0,
+        0x0,
+    }
+    <span class="comment">//A1 H8 Diagonal Magic bitboard mask	</span>
+    DiagA1H8MagicMask = []uint64{
+        0x0,
+        0x0,
+        0x0101010101010100,
+        0x0101010101010100,
+        0x0101010101010100,
+        0x0101010101010100,
+        0x0101010101010100,
+        0x0101010101010100,
+        0x8080808080808000,
+        0x4040404040400000,
+        0x2020202020000000,
+        0x1010101000000000,
+        0x0808080000000000,
+        0x0,
+        0x0,
+    }
+)</pre>
+				
+			
+				<pre>var (
+    <span class="comment">//Rank and File Masks</span>
+    <span class="comment">//Used for identifying rank / file from square indexes 0-63</span>
+    Files = []int{
+        1, 2, 3, 4, 5, 6, 7, 8,
+        1, 2, 3, 4, 5, 6, 7, 8,
+        1, 2, 3, 4, 5, 6, 7, 8,
+        1, 2, 3, 4, 5, 6, 7, 8,
+        1, 2, 3, 4, 5, 6, 7, 8,
+        1, 2, 3, 4, 5, 6, 7, 8,
+        1, 2, 3, 4, 5, 6, 7, 8,
+        1, 2, 3, 4, 5, 6, 7, 8,
+    }
+
+    Ranks = []int{
+        1, 1, 1, 1, 1, 1, 1, 1,
+        2, 2, 2, 2, 2, 2, 2, 2,
+        3, 3, 3, 3, 3, 3, 3, 3,
+        4, 4, 4, 4, 4, 4, 4, 4,
+        5, 5, 5, 5, 5, 5, 5, 5,
+        6, 6, 6, 6, 6, 6, 6, 6,
+        7, 7, 7, 7, 7, 7, 7, 7,
+        8, 8, 8, 8, 8, 8, 8, 8,
+    }
+
+    <span class="comment">//Piece names for printing the board</span>
+    PieceNames = []string{
+        &#34;  &#34;, &#34;P &#34;, &#34;K &#34;, &#34;N &#34;, &#34;  &#34;, &#34;B &#34;, &#34;R &#34;, &#34;Q &#34;,
+        &#34;  &#34;, &#34;P*&#34;, &#34;K*&#34;, &#34;N*&#34;, &#34;  &#34;, &#34;B*&#34;, &#34;R*&#34;, &#34;Q*&#34;,
+    }
+
+    <span class="comment">//array of bitmaps with individual bits set</span>
+    <span class="comment">//used for fast lookup of positions</span>
+    BitSet = make([]uint64, 64)
+
+    <span class="comment">//Array of Most significant bits, used for Eugene Nalimov&#39;s</span>
+    <span class="comment">// reverse bit scan</span>
+    MsbTable = make([]int, 256)
+
+    <span class="comment">//Indexes Ranks and Files to 0..63</span>
+    Index = [9][9]int{}
+
+    <span class="comment">//Colour Castling</span>
+    WhiteCastleOO  uint
+    WhiteCastleOOO uint
+    BlackCastleOO  uint
+    BlackCastleOOO uint
+
+    BlackSquares uint64
+    WhiteSquares uint64
+
+    PassedWhite   []uint64
+    PassedBlack   []uint64
+    IsolatedWhite []uint64
+    IsolatedBlack []uint64
+    BackWhite     []uint64
+    BackBlack     []uint64
+
+    KingShieldSWhite []uint64
+    KingShieldSBlack []uint64
+    KingShieldWWhite []uint64
+    KingShieldWBlack []uint64
+)</pre>
+				
+			
+				<pre>var (
+    target uint64 <span class="comment">//used as bitboard containing all squares </span>
+    <span class="comment">//available for each piece eg ~BlackPieces</span>
+    count    int
+    totMoves []Move
+)</pre>
+				
+			
+		
+		
+			
+			
+			<h2 id="BitCount">func <a href="/target/bitmanip.go?s=245:273#L8">BitCount</a></h2>
+			<pre>func BitCount(n uint64) uint</pre>
+			<p>
+BitCount calculates the bitcount of n
+</p>
+
+			
+		
+			
+			
+			<h2 id="FirstOne">func <a href="/target/bitmanip.go?s=1401:1429#L40">FirstOne</a></h2>
+			<pre>func FirstOne(n uint64) uint</pre>
+			<p>
+FirstOne returns the index of the first 1 bit in the bitboard
+</p>
+
+			
+		
+			
+			
+			<h2 id="Generate">func <a href="/target/movegenerator.go?s=880:921#L29">Generate</a></h2>
+			<pre>func Generate(depth int, b *Board) []Move</pre>
+			<p>
+Generate is primarily for testing, but generates a list of all possible moves to the desired depth.
+brute force and not to be used in the actual implementation. It generates close to 130m moves at depth 5
+(~512MB)
+</p>
+
+			
+		
+			
+			
+			<h2 id="GenerateAllMoves">func <a href="/target/movegenerator.go?s=1303:1341#L43">GenerateAllMoves</a></h2>
+			<pre>func GenerateAllMoves(b *Board) []Move</pre>
+			<p>
+Generate All Moves takes a board state and generates all the valid
+moves possible on the board, for the side whose turn it currently is.
+Averages between 30-45 moves per state
+</p>
+
+			
+		
+			
+			
+			<h2 id="InitAllData">func <a href="/target/globals.go?s=2741:2759#L118">InitAllData</a></h2>
+			<pre>func InitAllData()</pre>
+			
+			
+		
+			
+			
+			<h2 id="InitialiseAllMasks">func <a href="/target/attackmasks.go?s=2412:2437#L99">InitialiseAllMasks</a></h2>
+			<pre>func InitialiseAllMasks()</pre>
+			<p>
+InitialiseAllMasks initialises all masks to be used in the move generation
+process
+</p>
+
+			
+		
+			
+			
+			<h2 id="LastOne">func <a href="/target/bitmanip.go?s=1913:1949#L57">LastOne</a></h2>
+			<pre>func LastOne(n uint64) (result uint)</pre>
+			<p>
+LastOne returns the index of the last 1 bit in the bitboard
+</p>
+
+			
+		
+			
+			
+			<h2 id="PrintBitboard">func <a href="/target/bitmanip.go?s=2202:2230#L76">PrintBitboard</a></h2>
+			<pre>func PrintBitboard(n uint64)</pre>
+			<p>
+PrintBitboard prints a formatted bitstring of the bitboard
+</p>
+
+			
+		
+			
+			
+			<h2 id="ReverseUint64">func <a href="/target/bitmanip.go?s=879:914#L29">ReverseUint64</a></h2>
+			<pre>func ReverseUint64(n uint64) uint64</pre>
+			<p>
+ReverseUint64 reverses all the bits on a uint64. This is
+used primarily for calculating blocking pieces and omitting associated moves
+</p>
+
+			
+		
+			
+			
+			<h2 id="bishopMoves">func <a href="/target/movegenerator.go?s=11513:11557#L369">bishopMoves</a></h2>
+			<pre>func bishopMoves(b *Board, from uint) uint64</pre>
+			<p>
+bishopMoves generates all possible bishop moves from a square  on the board.
+It combines the moves generated from both the A1H8 diagonal and the A8H1 diagonal
+</p>
+
+			
+		
+			
+			
+			<h2 id="diagA1H8Moves">func <a href="/target/movegenerator.go?s=10926:10972#L355">diagA1H8Moves</a></h2>
+			<pre>func diagA1H8Moves(b *Board, from uint) uint64</pre>
+			<p>
+diagA1H8Moves generates all possible moves on the A1H8 diagonal.
+It uses pre-generated diagonal magic bitboards
+</p>
+
+			
+		
+			
+			
+			<h2 id="diagA8H1Moves">func <a href="/target/movegenerator.go?s=10385:10431#L340">diagA8H1Moves</a></h2>
+			<pre>func diagA8H1Moves(b *Board, from uint) uint64</pre>
+			<p>
+diagA8H1Moves generates all possible moves on the A8H1 diagonal.
+It uses pre-generated diagonal magic bitboards
+</p>
+
+			
+		
+			
+			
+			<h2 id="fileMoves">func <a href="/target/movegenerator.go?s=9971:10013#L328">fileMoves</a></h2>
+			<pre>func fileMoves(b *Board, from uint) uint64</pre>
+			<p>
+fileMoves generates all possible moves on a particular file of the board.
+It Uses pre-generated file attack masks and magic bitboards
+</p>
+
+			
+		
+			
+			
+			<h2 id="generateBlackKingMoves">func <a href="/target/movegenerator.go?s=5826:5870#L178">generateBlackKingMoves</a></h2>
+			<pre>func generateBlackKingMoves(b *Board) []Move</pre>
+			<p>
+generateBlackKingMoves generates all possible moves for the black king
+TODO(gdth) Check for check and attacks around the king which prevent movement
+</p>
+
+			
+		
+			
+			
+			<h2 id="generateBlackPawnMoves">func <a href="/target/movegenerator.go?s=2648:2692#L68">generateBlackPawnMoves</a></h2>
+			<pre>func generateBlackPawnMoves(b *Board) []Move</pre>
+			<p>
+generateBlackPawnMoves generates all moves for every black pawn currently on the board
+Includes special moves, enpassant and double movement
+</p>
+
+			
+		
+			
+			
+			<h2 id="generateKnightMoves">func <a href="/target/movegenerator.go?s=8184:8249#L267">generateKnightMoves</a></h2>
+			<pre>func generateKnightMoves(b *Board, id byte, pieces uint64) []Move</pre>
+			<p>
+generateKnightMoves generates all possible moves for each knight of a particular colour on the board
+id is the unique id of a white knight, for the move object and pieces is the bitboard containing the
+positions of a particular colour&#39;s knights
+</p>
+
+			
+		
+			
+			
+			<h2 id="generateSlidingMoves">func <a href="/target/movegenerator.go?s=8908:9009#L292">generateSlidingMoves</a></h2>
+			<pre>func generateSlidingMoves(b *Board, id byte, pieces uint64, moveGen func(*Board, uint) uint64) []Move</pre>
+			<p>
+generateSlidingMoves is a generic function for calculating all possible moves for any colour&#39;s rooks, bishops,
+or queens. It takes the id of the piece type along with the associated bitboard and a function to generate a move mask
+from.
+</p>
+
+			
+		
+			
+			
+			<h2 id="generateWhiteKingMoves">func <a href="/target/movegenerator.go?s=6959:7003#L222">generateWhiteKingMoves</a></h2>
+			<pre>func generateWhiteKingMoves(b *Board) []Move</pre>
+			<p>
+generateWhiteKingMoves generates all possible moves for the white king
+TODO(gdth) Check for check and attacks around the king which could impede movement
+</p>
+
+			
+		
+			
+			
+			<h2 id="generateWhitePawnMoves">func <a href="/target/movegenerator.go?s=4237:4281#L123">generateWhitePawnMoves</a></h2>
+			<pre>func generateWhitePawnMoves(b *Board) []Move</pre>
+			<p>
+generateWhitePawnMoves generates all possible moves for the white pawns currently on the board
+Includes special rules: enpassant and double movement
+</p>
+
+			
+		
+			
+			
+			<h2 id="init">func <a href="/target/gen.go?s=438:449#L1">init</a></h2>
+			<pre>func init()</pre>
+			<p>
+init Initialises all global data including attack masks
+</p>
+
+			
+		
+			
+			
+			<h2 id="initBitSet">func <a href="/target/globals.go?s=2815:2832#L124">initBitSet</a></h2>
+			<pre>func initBitSet()</pre>
+			
+			
+		
+			
+			
+			<h2 id="initBoardIndices">func <a href="/target/globals.go?s=2918:2941#L131">initBoardIndices</a></h2>
+			<pre>func initBoardIndices()</pre>
+			
+			
+		
+			
+			
+			<h2 id="initMsbTable">func <a href="/target/globals.go?s=3074:3093#L139">initMsbTable</a></h2>
+			<pre>func initMsbTable()</pre>
+			
+			
+		
+			
+			
+			<h2 id="initSquareMasks">func <a href="/target/globals.go?s=3435:3457#L161">initSquareMasks</a></h2>
+			<pre>func initSquareMasks()</pre>
+			
+			
+		
+			
+			
+			<h2 id="initialiseA1H8Masks">func <a href="/target/attackmasks.go?s=12207:12246#L471">initialiseA1H8Masks</a></h2>
+			<pre>func initialiseA1H8Masks(sq, state int)</pre>
+			
+			
+		
+			
+			
+			<h2 id="initialiseA8H1Masks">func <a href="/target/attackmasks.go?s=13205:13244#L510">initialiseA8H1Masks</a></h2>
+			<pre>func initialiseA8H1Masks(sq, state int)</pre>
+			
+			
+		
+			
+			
+			<h2 id="initialiseAttackMasks">func <a href="/target/attackmasks.go?s=6762:6790#L275">initialiseAttackMasks</a></h2>
+			<pre>func initialiseAttackMasks()</pre>
+			<p>
+inisitaliseAttackMasks initialises all attack masks
+</p>
+
+			
+		
+			
+			
+			<h2 id="initialiseBlackPawnMovesAndAttacks">func <a href="/target/attackmasks.go?s=8297:8344#L336">initialiseBlackPawnMovesAndAttacks</a></h2>
+			<pre>func initialiseBlackPawnMovesAndAttacks(sq int)</pre>
+			
+			
+		
+			
+			
+			<h2 id="initialiseCharBitSet">func <a href="/target/attackmasks.go?s=3903:3930#L162">initialiseCharBitSet</a></h2>
+			<pre>func initialiseCharBitSet()</pre>
+			
+			
+		
+			
+			
+			<h2 id="initialiseDiagA1H8Magic">func <a href="/target/attackmasks.go?s=5131:5161#L209">initialiseDiagA1H8Magic</a></h2>
+			<pre>func initialiseDiagA1H8Magic()</pre>
+			<p>
+initialiseDiagA8H1Magic initialises the DiagA8HMagic array with masks indexed
+by square
+</p>
+
+			
+		
+			
+			
+			<h2 id="initialiseDiagA8H1">func <a href="/target/attackmasks.go?s=4526:4551#L187">initialiseDiagA8H1</a></h2>
+			<pre>func initialiseDiagA8H1()</pre>
+			<p>
+initialiseDiagA8H1 initialises the DiagA8H1 array with masks indexed
+by square
+</p>
+
+			
+		
+			
+			
+			<h2 id="initialiseFileAttacks">func <a href="/target/attackmasks.go?s=11929:11970#L462">initialiseFileAttacks</a></h2>
+			<pre>func initialiseFileAttacks(sq, state int)</pre>
+			
+			
+		
+			
+			
+			<h2 id="initialiseFileMagic">func <a href="/target/attackmasks.go?s=5726:5752#L231">initialiseFileMagic</a></h2>
+			<pre>func initialiseFileMagic()</pre>
+			<p>
+initialiseFileMagic initialises the FileMagic array with masks
+indexed by square
+</p>
+
+			
+		
+			
+			
+			<h2 id="initialiseFileMask">func <a href="/target/attackmasks.go?s=4123:4148#L171">initialiseFileMask</a></h2>
+			<pre>func initialiseFileMask()</pre>
+			<p>
+initialiseFileMask initialises the FileMask array with masks
+indexed by squares on the board
+</p>
+
+			
+		
+			
+			
+			<h2 id="initialiseGeneralSlidingAttacks">func <a href="/target/attackmasks.go?s=5992:6030#L241">initialiseGeneralSlidingAttacks</a></h2>
+			<pre>func initialiseGeneralSlidingAttacks()</pre>
+			<p>
+initialiseGeneralSlidingAttacks initialises the GeneralSlidingAttacks array
+indexed by square
+</p>
+
+			
+		
+			
+			
+			<h2 id="initialiseKingAttacks">func <a href="/target/attackmasks.go?s=10420:10454#L412">initialiseKingAttacks</a></h2>
+			<pre>func initialiseKingAttacks(sq int)</pre>
+			
+			
+		
+			
+			
+			<h2 id="initialiseKnightAttacks">func <a href="/target/attackmasks.go?s=9074:9110#L367">initialiseKnightAttacks</a></h2>
+			<pre>func initialiseKnightAttacks(sq int)</pre>
+			
+			
+		
+			
+			
+			<h2 id="initialiseRankAttacks">func <a href="/target/attackmasks.go?s=11748:11789#L457">initialiseRankAttacks</a></h2>
+			<pre>func initialiseRankAttacks(sq, state int)</pre>
+			
+			
+		
+			
+			
+			<h2 id="initialiseRankMask">func <a href="/target/attackmasks.go?s=3585:3610#L147">initialiseRankMask</a></h2>
+			<pre>func initialiseRankMask()</pre>
+			<p>
+initialiseRankMask inisitalises the RankMask array which contains
+Masks for all ranks, indexed by squares on the board
+</p>
+
+			
+		
+			
+			
+			<h2 id="initialiseWhitePawnMovesAndAttacks">func <a href="/target/attackmasks.go?s=7520:7567#L305">initialiseWhitePawnMovesAndAttacks</a></h2>
+			<pre>func initialiseWhitePawnMovesAndAttacks(sq int)</pre>
+			
+			
+		
+			
+			
+			<h2 id="isAttacked">func <a href="/target/movegenerator.go?s=12225:12283#L388">isAttacked</a></h2>
+			<pre>func isAttacked(b *Board, bits uint64, attacker byte) bool</pre>
+			<p>
+isAttacked works out if a particular square is attacked by a specific piece type.
+</p>
+<p>
+returns true if attacked, false otherwise
+</p>
+
+			
+		
+			
+			
+			<h2 id="myappend">func <a href="/target/movegenerator.go?s=395:451#L13">myappend</a></h2>
+			<pre>func myappend(total []Move, n *int, moves ...Move) []Move</pre>
+			<p>
+myappend is a custom append function for the move generator
+to improve performance by reducing the number of allocations
+performed during generation
+</p>
+
+			
+		
+			
+			
+			<h2 id="queenMoves">func <a href="/target/movegenerator.go?s=11994:12037#L381">queenMoves</a></h2>
+			<pre>func queenMoves(b *Board, from uint) uint64</pre>
+			<p>
+queenMoves generates all possible queen moves from a square on the board.
+It combines moves generated for a bishop and a rook on the same square
+</p>
+
+			
+		
+			
+			
+			<h2 id="rankMoves">func <a href="/target/movegenerator.go?s=9535:9577#L316">rankMoves</a></h2>
+			<pre>func rankMoves(b *Board, from uint) uint64</pre>
+			<p>
+rankMoves generates all moves along a particular rank on the board.
+It Uses pre-generated rank attack masks
+</p>
+
+			
+		
+			
+			
+			<h2 id="rookMoves">func <a href="/target/movegenerator.go?s=11748:11790#L375">rookMoves</a></h2>
+			<pre>func rookMoves(b *Board, from uint) uint64</pre>
+			<p>
+rookMoves generates all possible rook moves from a square on the board.
+It combines both the rank moves and the file moves
+</p>
+
+			
+		
+		
+			
+			
+			<h2 id="Board">type <a href="/target/board.go?s=217:837#L1">Board</a></h2>
+			<pre>type Board struct {
+    <span class="comment">//white piece masks</span>
+    WhitePawns,
+    WhiteRooks,
+    WhiteKnights,
+    WhiteBishops,
+    WhiteQueens,
+    WhiteKing uint64
+
+    <span class="comment">//black piece masks</span>
+    BlackPawns,
+    BlackRooks,
+    BlackKnights,
+    BlackBishops,
+    BlackQueens,
+    BlackKing uint64
+
+    WhitePieces     uint64
+    BlackPieces     uint64
+    OccupiedSquares uint64
+
+    NextMove    byte <span class="comment">//white or black to move next</span>
+    WhiteCastle byte <span class="comment">//white castle status</span>
+    BlackCastle byte <span class="comment">//black castle status</span>
+    Ep          int  <span class="comment">//enpassant target</span>
+    NumMoves    int  <span class="comment">//number of moves (used to count fifty move rule)</span>
+
+    Material int <span class="comment">//value of all pieces on board</span>
+
+    Squares []byte <span class="comment">//current occupancy of all squares</span>
+}</pre>
+			<p>
+Board structure used to contain all information regarding the current board state
+includes bitboards for every piece type along with current turn and castle status
+of each player
+</p>
+
+
+			
+
+			
+
+			
+
+			
+
+			
+				
+				<h3 id="Board.Clone">func (*Board) <a href="/target/board.go?s=4435:4465#L155">Clone</a></h3>
+				<pre>func (b *Board) Clone() *Board</pre>
+				<p>
+Board.Clone creates a copy of the board
+This is primarily used to pass distinct copies to go routines
+for concurrent generation.
+</p>
+
+				
+				
+			
+				
+				<h3 id="Board.Init">func (*Board) <a href="/target/board.go?s=973:995#L34">Init</a></h3>
+				<pre>func (b *Board) Init()</pre>
+				<p>
+Board.Init initialises a new board state with initial position of
+all the pieces along with material values and castling statuses
+</p>
+
+				
+				
+			
+				
+				<h3 id="Board.InitFromGrid">func (*Board) <a href="/target/board.go?s=2324:2399#L80">InitFromGrid</a></h3>
+				<pre>func (b *Board) InitFromGrid(grid []byte, moves, ep int, cw, cb, next byte)</pre>
+				<p>
+Board.InitFromGrid initialises the board from the array of bytes containing the
+position of the pieces. Initialises material values and castle statuses
+</p>
+
+				
+				
+			
+				
+				<h3 id="Board.MakeMove">func (*Board) <a href="/target/movement.go?s=62:98#L1">MakeMove</a></h3>
+				<pre>func (b *Board) MakeMove(move *Move)</pre>
+				<p>
+Board.MakeMove applies the move upon the board
+</p>
+
+				
+				
+			
+				
+				<h3 id="Board.PrintBoard">func (*Board) <a href="/target/board.go?s=3928:3956#L139">PrintBoard</a></h3>
+				<pre>func (b *Board) PrintBoard()</pre>
+				<p>
+Board.PrintBoard prints a representation of the board
+</p>
+
+				
+				
+			
+				
+				<h3 id="Board.UnmakeMove">func (*Board) <a href="/target/movement.go?s=1105:1143#L25">UnmakeMove</a></h3>
+				<pre>func (b *Board) UnmakeMove(move *Move)</pre>
+				<p>
+Board.UnmakeMove undoes the move which has been previously applied to the board
+</p>
+
+				
+				
+			
+				
+				<h3 id="Board.makeBlackKingMove">func (*Board) <a href="/target/movement.go?s=13624:13669#L581">makeBlackKingMove</a></h3>
+				<pre>func (b *Board) makeBlackKingMove(move *Move)</pre>
+				<p>
+Board.makeBlackKingMove makes a black king move including castling rules
+</p>
+
+				
+				
+			
+				
+				<h3 id="Board.makeBlackPawnMove">func (*Board) <a href="/target/movement.go?s=12105:12150#L508">makeBlackPawnMove</a></h3>
+				<pre>func (b *Board) makeBlackPawnMove(move *Move)</pre>
+				<p>
+Board.makeBlackPawnMove makes a black pawn move on the board including special rules
+</p>
+
+				
+				
+			
+				
+				<h3 id="Board.makeBlackProm">func (*Board) <a href="/target/movement.go?s=16764:16808#L719">makeBlackProm</a></h3>
+				<pre>func (b *Board) makeBlackProm(prom, to byte)</pre>
+				<p>
+Board.makeBlackProm makes a black promotion move
+</p>
+
+				
+				
+			
+				
+				<h3 id="Board.makeBlackRookMove">func (*Board) <a href="/target/movement.go?s=12972:13017#L549">makeBlackRookMove</a></h3>
+				<pre>func (b *Board) makeBlackRookMove(move *Move)</pre>
+				<p>
+Board.makeBlackRookMove makes black rook move including castling moves
+</p>
+
+				
+				
+			
+				
+				<h3 id="Board.makeCapture">func (*Board) <a href="/target/movement.go?s=2160:2202#L67">makeCapture</a></h3>
+				<pre>func (b *Board) makeCapture(capt, to byte)</pre>
+				<p>
+Board.makeCapture makes a capture of a piece
+</p>
+
+				
+				
+			
+				
+				<h3 id="Board.makeGenericMove">func (*Board) <a href="/target/movement.go?s=5436:5511#L207">makeGenericMove</a></h3>
+				<pre>func (b *Board) makeGenericMove(move *Move, pieces *uint64, colour *uint64)</pre>
+				<p>
+Can Be used for non-special movement types
+e.g. Queens, Knights and Bishops
+</p>
+<p>
+They have no special movment rules
+This is also colour independant
+</p>
+
+				
+				
+			
+				
+				<h3 id="Board.makeWhiteKingMove">func (*Board) <a href="/target/movement.go?s=7973:8018#L327">makeWhiteKingMove</a></h3>
+				<pre>func (b *Board) makeWhiteKingMove(move *Move)</pre>
+				<p>
+Board.makeWhiteKingMove makes a king move on the board including castling rules
+</p>
+
+				
+				
+			
+				
+				<h3 id="Board.makeWhitePawnMove">func (*Board) <a href="/target/movement.go?s=6437:6482#L254">makeWhitePawnMove</a></h3>
+				<pre>func (b *Board) makeWhitePawnMove(move *Move)</pre>
+				<p>
+Board.makeWhitePawnMove makes a white pawn move on the board, including
+special rules
+</p>
+
+				
+				
+			
+				
+				<h3 id="Board.makeWhiteProm">func (*Board) <a href="/target/movement.go?s=11067:11112#L462">makeWhiteProm</a></h3>
+				<pre>func (b *Board) makeWhiteProm(piece, to byte)</pre>
+				<p>
+Board.makeWhiteProm makes a white promotion
+</p>
+
+				
+				
+			
+				
+				<h3 id="Board.makeWhiteRookMove">func (*Board) <a href="/target/movement.go?s=7314:7359#L295">makeWhiteRookMove</a></h3>
+				<pre>func (b *Board) makeWhiteRookMove(move *Move)</pre>
+				<p>
+Board.makeWhiteRookMove makes a rook move on the board, including castling rules
+</p>
+
+				
+				
+			
+				
+				<h3 id="Board.unmakeBlackKingMove">func (*Board) <a href="/target/movement.go?s=15849:15896#L680">unmakeBlackKingMove</a></h3>
+				<pre>func (b *Board) unmakeBlackKingMove(move *Move)</pre>
+				<p>
+Board.unmakeBlackKingMove unmakes a king move including castling
+</p>
+
+				
+				
+			
+				
+				<h3 id="Board.unmakeBlackPawnMove">func (*Board) <a href="/target/movement.go?s=14586:14633#L622">unmakeBlackPawnMove</a></h3>
+				<pre>func (b *Board) unmakeBlackPawnMove(move *Move)</pre>
+				<p>
+Board.unmakeBlackPawnMove unmakes a black pawn move including special rules
+</p>
+
+				
+				
+			
+				
+				<h3 id="Board.unmakeBlackProm">func (*Board) <a href="/target/movement.go?s=17267:17313#L742">unmakeBlackProm</a></h3>
+				<pre>func (b *Board) unmakeBlackProm(prom, to byte)</pre>
+				<p>
+Board.unmakeBlackProm unmakes a black promotion move
+</p>
+
+				
+				
+			
+				
+				<h3 id="Board.unmakeBlackRookMove">func (*Board) <a href="/target/movement.go?s=15360:15407#L657">unmakeBlackRookMove</a></h3>
+				<pre>func (b *Board) unmakeBlackRookMove(move *Move)</pre>
+				<p>
+Board.unmakeBlackRookMove unmakes a rook move including castling
+</p>
+
+				
+				
+			
+				
+				<h3 id="Board.unmakeCapture">func (*Board) <a href="/target/movement.go?s=3721:3765#L133">unmakeCapture</a></h3>
+				<pre>func (b *Board) unmakeCapture(capt, to byte)</pre>
+				<p>
+Board.unmakeCapture unmakes the associated capture
+</p>
+
+				
+				
+			
+				
+				<h3 id="Board.unmakeGenericMove">func (*Board) <a href="/target/movement.go?s=5925:6002#L232">unmakeGenericMove</a></h3>
+				<pre>func (b *Board) unmakeGenericMove(move *Move, pieces *uint64, colour *uint64)</pre>
+				<p>
+Unmake generic move,
+same rules as above
+</p>
+
+				
+				
+			
+				
+				<h3 id="Board.unmakeWhiteKingMove">func (*Board) <a href="/target/movement.go?s=10156:10203#L423">unmakeWhiteKingMove</a></h3>
+				<pre>func (b *Board) unmakeWhiteKingMove(move *Move)</pre>
+				<p>
+Board.unmakeWhiteKingMove unmakes a king move including castling
+</p>
+
+				
+				
+			
+				
+				<h3 id="Board.unmakeWhitePawnMove">func (*Board) <a href="/target/movement.go?s=8939:8986#L368">unmakeWhitePawnMove</a></h3>
+				<pre>func (b *Board) unmakeWhitePawnMove(move *Move)</pre>
+				<p>
+Board.unmakeWhitePawnMoves unmakes a pawn move, including undoing special rules
+</p>
+
+				
+				
+			
+				
+				<h3 id="Board.unmakeWhiteProm">func (*Board) <a href="/target/movement.go?s=11566:11613#L485">unmakeWhiteProm</a></h3>
+				<pre>func (b *Board) unmakeWhiteProm(piece, to byte)</pre>
+				<p>
+Board.unmakeWhiteProm unmakes a white promotion
+</p>
+
+				
+				
+			
+				
+				<h3 id="Board.unmakeWhiteRookMove">func (*Board) <a href="/target/movement.go?s=9668:9715#L400">unmakeWhiteRookMove</a></h3>
+				<pre>func (b *Board) unmakeWhiteRookMove(move *Move)</pre>
+				<p>
+Board.unmakeRookMove unmakes a rook move, including capture
+</p>
+
+				
+				
+			
+		
+			
+			
+			<h2 id="Move">type <a href="/target/move.go?s=359:389#L11">Move</a></h2>
+			<pre>type Move struct {
+    Val uint
+}</pre>
+			<p>
+Move Stores information in max 32 bits
+Information needed to be stored:
+</p>
+<pre>- From index (0.. 63)
+- To Index (0.. 63)
+- Piece (0.. 15)
+- Caputured Piece (0.. 15)
+- Promotion (0.. 15)
+
+from = 6 bits
+to = 6 bits
+piece = 4 bits
+captured = 4 bits
+promotion = 4 bits
+</pre>
+
+
+			
+
+			
+
+			
+
+			
+
+			
+				
+				<h3 id="Move.Clear">func (*Move) <a href="/target/move.go?s=437:459#L16">Clear</a></h3>
+				<pre>func (m *Move) Clear()</pre>
+				<p>
+Move.Clear returns the move to a zero state
+</p>
+
+				
+				
+			
+				
+				<h3 id="Move.GetCapt">func (*Move) <a href="/target/move.go?s=1702:1731#L68">GetCapt</a></h3>
+				<pre>func (m *Move) GetCapt() byte</pre>
+				<p>
+Move.GetCapt returns the piece which has been captured
+</p>
+
+				
+				
+			
+				
+				<h3 id="Move.GetFrom">func (*Move) <a href="/target/move.go?s=1342:1371#L53">GetFrom</a></h3>
+				<pre>func (m *Move) GetFrom() byte</pre>
+				<p>
+Move.GetFrom return the from index
+</p>
+
+				
+				
+			
+				
+				<h3 id="Move.GetPiece">func (*Move) <a href="/target/move.go?s=1568:1598#L63">GetPiece</a></h3>
+				<pre>func (m *Move) GetPiece() byte</pre>
+				<p>
+Move.GetPiece returns the piece type being moved
+</p>
+
+				
+				
+			
+				
+				<h3 id="Move.GetProm">func (*Move) <a href="/target/move.go?s=1822:1851#L73">GetProm</a></h3>
+				<pre>func (m *Move) GetProm() byte</pre>
+				<p>
+Move.GetProm returns the promotion piece
+</p>
+
+				
+				
+			
+				
+				<h3 id="Move.GetTo">func (*Move) <a href="/target/move.go?s=1444:1471#L58">GetTo</a></h3>
+				<pre>func (m *Move) GetTo() byte</pre>
+				<p>
+Move.GetTo returns the to index
+</p>
+
+				
+				
+			
+				
+				<h3 id="Move.IsBlackmove">func (*Move) <a href="/target/move.go?s=2169:2202#L83">IsBlackmove</a></h3>
+				<pre>func (m *Move) IsBlackmove() bool</pre>
+				<p>
+Move.IsBlackmove returns true if it is a black move, false otherwise
+</p>
+
+				
+				
+			
+				
+				<h3 id="Move.IsCapture">func (*Move) <a href="/target/move.go?s=2373:2404#L88">IsCapture</a></h3>
+				<pre>func (m *Move) IsCapture() bool</pre>
+				<p>
+Move.IsCapture returns true if capture bits are non-zero, false otherwise
+</p>
+
+				
+				
+			
+				
+				<h3 id="Move.IsCastle">func (*Move) <a href="/target/move.go?s=4564:4594#L140">IsCastle</a></h3>
+				<pre>func (m *Move) IsCastle() bool</pre>
+				<p>
+Move.IsCastle returns  true if castling move, false otherwise
+</p>
+
+				
+				
+			
+				
+				<h3 id="Move.IsCastleOO">func (*Move) <a href="/target/move.go?s=4773:4805#L145">IsCastleOO</a></h3>
+				<pre>func (m *Move) IsCastleOO() bool</pre>
+				<p>
+Move.IsCastleOO returns true if two square castle move, false otherwise
+</p>
+
+				
+				
+			
+				
+				<h3 id="Move.IsCastleOOO">func (*Move) <a href="/target/move.go?s=4985:5018#L150">IsCastleOOO</a></h3>
+				<pre>func (m *Move) IsCastleOOO() bool</pre>
+				<p>
+Move.IsCastleOOO returns true if three square castle move, false otherwise
+</p>
+
+				
+				
+			
+				
+				<h3 id="Move.IsEnpassant">func (*Move) <a href="/target/move.go?s=4127:4160#L130">IsEnpassant</a></h3>
+				<pre>func (m *Move) IsEnpassant() bool</pre>
+				<p>
+Move.IsEnpassant returns true if enpassant move, false otherwise
+</p>
+
+				
+				
+			
+				
+				<h3 id="Move.IsKingcaptured">func (*Move) <a href="/target/move.go?s=2591:2627#L93">IsKingcaptured</a></h3>
+				<pre>func (m *Move) IsKingcaptured() bool</pre>
+				<p>
+Move.IsKingcaptured returns true if capture bits are king, false otherwise
+</p>
+
+				
+				
+			
+				
+				<h3 id="Move.IsKingmove">func (*Move) <a href="/target/move.go?s=3181:3213#L108">IsKingmove</a></h3>
+				<pre>func (m *Move) IsKingmove() bool</pre>
+				<p>
+Move.IsKingmove returns true if piece bits are king, false otherwise
+</p>
+
+				
+				
+			
+				
+				<h3 id="Move.IsPawnDoublemove">func (*Move) <a href="/target/move.go?s=3778:3816#L122">IsPawnDoublemove</a></h3>
+				<pre>func (m *Move) IsPawnDoublemove() bool</pre>
+				
+				
+				
+			
+				
+				<h3 id="Move.IsPawnmove">func (*Move) <a href="/target/move.go?s=3372:3404#L113">IsPawnmove</a></h3>
+				<pre>func (m *Move) IsPawnmove() bool</pre>
+				<p>
+Move.IsPawnmove returns true if piece bits are pawn, false otherwise
+</p>
+
+				
+				
+			
+				
+				<h3 id="Move.IsPromotion">func (*Move) <a href="/target/move.go?s=4345:4378#L135">IsPromotion</a></h3>
+				<pre>func (m *Move) IsPromotion() bool</pre>
+				<p>
+Move.IsPromotion returns true if promotion bits are non-zero, false otherwise
+</p>
+
+				
+				
+			
+				
+				<h3 id="Move.IsRookcaptured">func (*Move) <a href="/target/move.go?s=2985:3021#L103">IsRookcaptured</a></h3>
+				<pre>func (m *Move) IsRookcaptured() bool</pre>
+				<p>
+Move.IsRookcaptured returns true if capture bits are rook, false otherwise
+</p>
+
+				
+				
+			
+				
+				<h3 id="Move.IsRookmove">func (*Move) <a href="/target/move.go?s=2787:2819#L98">IsRookmove</a></h3>
+				<pre>func (m *Move) IsRookmove() bool</pre>
+				<p>
+Move.IsRookmove returns true if piece bits are rook, false otherwise
+</p>
+
+				
+				
+			
+				
+				<h3 id="Move.IsWhitemove">func (*Move) <a href="/target/move.go?s=1969:2002#L78">IsWhitemove</a></h3>
+				<pre>func (m *Move) IsWhitemove() bool</pre>
+				<p>
+Move.IsWhitemove returns true if it is a white move, false otherwise
+</p>
+
+				
+				
+			
+				
+				<h3 id="Move.Print">func (*Move) <a href="/target/move.go?s=5178:5213#L155">Print</a></h3>
+				<pre>func (m *Move) Print() (ret string)</pre>
+				<p>
+Move.Print returns a string representation of the move
+</p>
+
+				
+				
+			
+				
+				<h3 id="Move.SetCapt">func (*Move) <a href="/target/move.go?s=1007:1040#L39">SetCapt</a></h3>
+				<pre>func (m *Move) SetCapt(capt byte)</pre>
+				<p>
+Move.SetCapt bits 16-19, the piece being captured
+</p>
+
+				
+				
+			
+				
+				<h3 id="Move.SetFrom">func (*Move) <a href="/target/move.go?s=527:560#L21">SetFrom</a></h3>
+				<pre>func (m *Move) SetFrom(from byte)</pre>
+				<p>
+Move.SetFrom set first 6 bits, as the from index
+</p>
+
+				
+				
+			
+				
+				<h3 id="Move.SetPiece">func (*Move) <a href="/target/move.go?s=852:887#L33">SetPiece</a></h3>
+				<pre>func (m *Move) SetPiece(piece byte)</pre>
+				<p>
+Move.SetPiece bits 12-15, the piece being moved
+</p>
+
+				
+				
+			
+				
+				<h3 id="Move.SetProm">func (*Move) <a href="/target/move.go?s=1198:1231#L46">SetProm</a></h3>
+				<pre>func (m *Move) SetProm(prom byte)</pre>
+				<p>
+Move.SetProm bits 20-23, the piece type a pawn is being promoted to
+usually 0000
+</p>
+
+				
+				
+			
+				
+				<h3 id="Move.SetTo">func (*Move) <a href="/target/move.go?s=709:738#L27">SetTo</a></h3>
+				<pre>func (m *Move) SetTo(to byte)</pre>
+				<p>
+Move.SetTo set second 6 bits as the to index
+</p>
+
+				
+				
+			
+		
+		</div>
+	
+
+	
+
+
+
+
+
+
+

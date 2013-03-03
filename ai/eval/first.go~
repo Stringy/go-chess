@@ -1,0 +1,284 @@
+package eval
+
+import (
+	"chess/ai/gen"
+)
+
+type StaticHeuristic struct {
+	wpawns,
+	wrooks,
+	wknights,
+	wbishops,
+	wqueens uint
+
+	bpawns,
+	brooks,
+	bknights,
+	bbishops,
+	bqueens uint
+
+	bkingsq, wkingsq uint
+
+	wmat, bmat uint
+
+	wtotal, btotal uint
+
+	wpassedpawns, bpassedpawns uint64
+}
+
+//Eval takes into account the following considerations during the 
+//evaluation of the chess position
+//    material value
+//    king safety
+//    bishop pair
+//    +bishop val as num pawns decreases
+//    -knight val as num pawns decreases
+//    decrease score if double pawn
+//    lower queen value if moving early
+//    bonus for mobility
+//    bonus for threatening other pieces
+//    bonus for protection of own peices
+//    bonus for pawns close to promotion
+//    bonus for development speed of minor pieces in the opening
+func (s *StaticHeuristic) Eval(b *gen.Board) int {
+	score := 0
+	s.initFromBoard(b)
+
+	if s.isDraw(b) {
+		return score
+	}
+
+	score += s.materialValue()
+	score += s.whiteEvaluation(b)
+	score -= s.blackEvaluation(b)
+	return score
+}
+
+//initFromBoard initialises the heurisitc structure with material values
+//of the board
+func (s *StaticHeuristic) initFromBoard(b *gen.Board) {
+	s.wkingsq = gen.FirstOne(b.WhiteKing)
+	s.bkingsq = gen.FirstOne(b.BlackKing)
+
+	s.wpawns = gen.BitCount(b.WhitePawns)
+	s.wrooks = gen.BitCount(b.WhiteRooks)
+	s.wknights = gen.BitCount(b.WhiteKnights)
+	s.wbishops = gen.BitCount(b.WhiteBishops)
+	s.wqueens = gen.BitCount(b.WhiteQueens)
+	s.wmat = (RookValue * s.wrooks) +
+		(KnightValue * s.wknights) +
+		(BishopValue * s.wbishops) +
+		(QueenValue * s.wqueens)
+	s.wtotal = s.wpawns + s.wrooks + s.wbishops + s.wknights + s.wqueens
+
+	s.bpawns = gen.BitCount(b.BlackPawns)
+	s.brooks = gen.BitCount(b.BlackRooks)
+	s.bknights = gen.BitCount(b.BlackKnights)
+	s.bbishops = gen.BitCount(b.BlackBishops)
+	s.bqueens = gen.BitCount(b.BlackQueens)
+	s.bmat = (RookValue * s.brooks) +
+		(KnightValue * s.bknights) +
+		(BishopValue * s.bbishops) +
+		(QueenValue * s.bqueens)
+	s.btotal = s.bpawns + s.brooks + s.bbishops + s.bknights + s.bqueens
+}
+
+//materialValue evaluates the material currently on the board
+//it penalises loss of pieces in the late game and encourages
+//taking of pieces for the current winner
+func (s StaticHeuristic) materialValue() int {
+	if s.wmat+s.wpawns > s.bmat+s.bpawns {
+		return int(45 + 3*s.wtotal - 6*s.btotal)
+	}
+	return int(-45 - int(3*s.btotal+6*s.wtotal))
+}
+
+//isDraw checks the state for common draw positions
+//    K vs. KN
+//    K vs. KB
+func (s StaticHeuristic) isDraw(b *gen.Board) bool {
+	if s.wpawns == 0 || s.bpawns == 0 {
+		//king vs. king
+		if s.wtotal == 0 && s.btotal == 0 {
+			return true
+		}
+		//king and knight vs. king
+		wkandn := (s.wtotal == KnightValue && s.wknights == 1) && s.btotal == 0
+		bkandn := (s.btotal == KnightValue && s.bknights == 1) && s.wtotal == 0
+		if wkandn || bkandn {
+			return true
+		}
+
+		//two kings and one or more bishops
+		if s.wbishops+s.bbishops > 0 {
+			onlywbish := (s.wknights == 0 && s.wrooks == 0 && s.wqueens == 0)
+			onlybbish := (s.bknights == 0 && s.brooks == 0 && s.bqueens == 0)
+			if onlywbish && onlybbish {
+				n := ((b.WhiteBishops | b.BlackBishops) & WhiteSquares) == 0
+				m := ((b.WhiteBishops | b.BlackBishops) & BlackSquares) == 0
+				if n || m {
+					return true
+				}
+			}
+		}
+	}
+	return false
+}
+
+func (s StaticHeuristic) blackEvaluation(b *gen.Board) int {
+	score := s.evalWhitePawns(b) +
+		s.evalWhiteRooks(b) +
+		s.evalWhiteKnights(b) +
+		s.evalWhiteBishops(b) +
+		s.evalWhiteQueens(b)
+	return score
+}
+
+func (s StaticHeuristic) whiteEvaluation(b *gen.Board) int {
+	score := s.evalWhitePawns(b) +
+		s.evalWhiteRooks(b) +
+		s.evalWhiteKnights(b) +
+		s.evalWhiteBishops(b) +
+		s.evalWhiteQueens(b)
+	return score
+}
+
+func (s *StaticHeuristic) evalWhitePawns(b *gen.Board) int {
+	twpawns := b.WhitePawns
+	tscore := s.evalGenericWhitePiece(twpawns, PawnTable)
+	for twpawns != 0 {
+		sq := gen.FirstOne(twpawns)
+		//passed pawns
+		if (gen.FileMask[sq] & b.BlackPawns) == 0 {
+			tscore += PassedPawnBonus
+			s.wpassedpawns ^= gen.BitSet[sq]
+		}
+		//doubled pawns
+		if (b.WhitePawns^gen.BitSet[sq])&gen.FileMask[sq] == 0 {
+			tscore -= DoublePawnPenalty
+		}
+		//isolated pawns TODO
+		twpawns ^= gen.BitSet[sq]
+	}
+	return tscore
+}
+
+func (s StaticHeuristic) evalWhiteKnights(b *gen.Board) int {
+	twknights := b.WhiteKnights
+	tscore := s.evalGenericWhitePiece(twknights, KnightTable)
+	return tscore
+}
+
+func (s StaticHeuristic) evalWhiteBishops(b *gen.Board) int {
+	twbishops := b.WhiteBishops
+	tscore := s.evalGenericWhitePiece(twbishops, BishopTable)
+	if twbishops != 0 {
+		if gen.BitCount(twbishops) == 2 {
+			tscore += BishopPairBonus
+		}
+	}
+	return tscore
+}
+
+func (s StaticHeuristic) evalWhiteRooks(b *gen.Board) int {
+	twrooks := b.WhiteRooks
+	tscore := s.evalGenericWhitePiece(twrooks, RookTable)
+	for twrooks != 0 {
+		sq := gen.FirstOne(twrooks)
+		if gen.FileMask[sq]&s.wpassedpawns != 0 {
+			if sq < gen.LastOne(gen.FileMask[sq]&s.wpassedpawns) {
+				tscore += RookPassedPawnBonus
+			}
+		}
+		twrooks ^= gen.BitSet[sq]
+	}
+	return tscore
+}
+
+func (s StaticHeuristic) evalWhiteQueens(b *gen.Board) int {
+	twqueens := b.WhiteQueens
+	tscore := s.evalGenericWhitePiece(twqueens, QueenTable)
+	return tscore
+}
+
+func (s *StaticHeuristic) evalBlackPawns(b *gen.Board) int {
+	tbpawns := b.BlackPawns
+	tscore := s.evalGenericBlackPiece(tbpawns, PawnTable)
+	for tbpawns != 0 {
+		sq := gen.FirstOne(tbpawns)
+		//passed pawns
+		if (gen.FileMask[sq] & b.BlackPawns) == 0 {
+			tscore += PassedPawnBonus
+			s.wpassedpawns ^= gen.BitSet[sq]
+		}
+		//doubled pawns
+		if (b.BlackPawns^gen.BitSet[sq])&gen.FileMask[sq] == 0 {
+			tscore -= DoublePawnPenalty
+		}
+		//isolated pawns TODO
+		tbpawns ^= gen.BitSet[sq]
+	}
+	return tscore
+}
+
+func (s StaticHeuristic) evalBlackKnights(b *gen.Board) int {
+	tbknights := b.BlackKnights
+	tscore := s.evalGenericBlackPiece(tbknights, KnightTable)
+	return tscore
+}
+
+func (s StaticHeuristic) evalBlackBishops(b *gen.Board) int {
+	tbbishops := b.BlackBishops
+	tscore := s.evalGenericBlackPiece(tbbishops, BishopTable)
+	if tbbishops != 0 {
+		if gen.BitCount(tbbishops) == 2 {
+			tscore += BishopPairBonus
+		}
+	}
+	return tscore
+}
+
+func (s StaticHeuristic) evalBlackRooks(b *gen.Board) int {
+	tbrooks := b.BlackRooks
+	tscore := s.evalGenericBlackPiece(tbrooks, BishopTable)
+	for tbrooks != 0 {
+		sq := gen.FirstOne(tbrooks)
+		if gen.FileMask[sq]&s.bpassedpawns != 0 {
+			if sq < gen.LastOne(gen.FileMask[sq]&s.bpassedpawns) {
+				tscore += RookPassedPawnBonus
+			}
+		}
+		tbrooks ^= gen.BitSet[sq]
+	}
+	return tscore
+}
+
+func (s StaticHeuristic) evalBlackQueens(b *gen.Board) int {
+	tbqueens := b.BlackQueens
+	tscore := s.evalGenericBlackPiece(tbqueens, QueenTable)
+	return tscore
+}
+
+func (s StaticHeuristic) evalGenericWhitePiece(pieces uint64, values []int) int {
+	temp := pieces
+	score := 0
+	for temp != 0 {
+		sq := gen.FirstOne(temp)
+		score += values[sq]
+		temp ^= gen.BitSet[sq]
+	}
+	return score
+}
+
+func (s StaticHeuristic) evalGenericBlackPiece(pieces uint64, values []int) int {
+	temp := pieces
+	score := 0
+	for temp != 0 {
+		sq := gen.FirstOne(temp)
+		score += values[Mirror[sq]]
+		temp ^= gen.BitSet[sq]
+	}
+	return score
+}
+ 
+ 

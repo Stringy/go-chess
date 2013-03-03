@@ -1,0 +1,714 @@
+<!--
+	Copyright 2009 The Go Authors. All rights reserved.
+	Use of this source code is governed by a BSD-style
+	license that can be found in the LICENSE file.
+-->
+
+	
+		<div id="short-nav">
+			<dl>
+			<dd><code>import "chess/ai/eval"</code></dd>
+			</dl>
+			<dl>
+			<dd><a href="#overview" class="overviewLink">Overview</a></dd>
+			<dd><a href="#index">Index</a></dd>
+			
+			
+			</dl>
+		</div>
+		<!-- The package's Name is printed as title by the top-level template -->
+		<div id="overview" class="toggleVisible">
+			<div class="collapsed">
+				<h2 class="toggleButton" title="Click to show Overview section">Overview ▹</h2>
+			</div>
+			<div class="expanded">
+				<h2 class="toggleButton" title="Click to hide Overview section">Overview ▾</h2>
+				<p>
+eval package provides functionality to evaluate the value of a particular
+board state.
+</p>
+
+			</div>
+		</div>
+		
+	
+		<h2 id="index">Index</h2>
+		<!-- Table of contents for API; must be named manual-nav to turn off auto nav. -->
+		<div id="manual-nav">
+			<dl>
+			
+			
+				<dd><a href="#variables">Variables</a></dd>
+			
+			
+				
+				<dd><a href="#Eval">func Eval(b *gen.Board) int</a></dd>
+			
+				
+				<dd><a href="#Value">func Value(piece byte) uint</a></dd>
+			
+				
+				<dd><a href="#init">func init()</a></dd>
+			
+				
+				<dd><a href="#initDistanceArray">func initDistanceArray()</a></dd>
+			
+				
+				<dd><a href="#initialiseGlobals">func initialiseGlobals()</a></dd>
+			
+				
+				<dd><a href="#initialiseKingShields">func initialiseKingShields()</a></dd>
+			
+				
+				<dd><a href="#initialisePawnMasks">func initialisePawnMasks()</a></dd>
+			
+			
+				
+				<dd><a href="#Evaluator">type Evaluator</a></dd>
+				
+				
+			
+				
+				<dd><a href="#StaticHeuristic">type StaticHeuristic</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#StaticHeuristic.Eval">func (s *StaticHeuristic) Eval(b *gen.Board) int</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#StaticHeuristic.blackEvaluation">func (s StaticHeuristic) blackEvaluation(b *gen.Board) int</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#StaticHeuristic.evalBlackBishops">func (s StaticHeuristic) evalBlackBishops(b *gen.Board) int</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#StaticHeuristic.evalBlackKing">func (s StaticHeuristic) evalBlackKing(b *gen.Board) int</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#StaticHeuristic.evalBlackKnights">func (s StaticHeuristic) evalBlackKnights(b *gen.Board) int</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#StaticHeuristic.evalBlackPawns">func (s *StaticHeuristic) evalBlackPawns(b *gen.Board) int</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#StaticHeuristic.evalBlackQueens">func (s StaticHeuristic) evalBlackQueens(b *gen.Board) int</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#StaticHeuristic.evalBlackRooks">func (s StaticHeuristic) evalBlackRooks(b *gen.Board) int</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#StaticHeuristic.evalGenericBlackPiece">func (s StaticHeuristic) evalGenericBlackPiece(pieces uint64, values, distances []int) int</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#StaticHeuristic.evalGenericWhitePiece">func (s StaticHeuristic) evalGenericWhitePiece(pieces uint64, values, distances []int) int</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#StaticHeuristic.evalWhiteBishops">func (s StaticHeuristic) evalWhiteBishops(b *gen.Board) int</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#StaticHeuristic.evalWhiteKing">func (s StaticHeuristic) evalWhiteKing(b *gen.Board) int</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#StaticHeuristic.evalWhiteKnights">func (s StaticHeuristic) evalWhiteKnights(b *gen.Board) int</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#StaticHeuristic.evalWhitePawns">func (s *StaticHeuristic) evalWhitePawns(b *gen.Board) int</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#StaticHeuristic.evalWhiteQueens">func (s StaticHeuristic) evalWhiteQueens(b *gen.Board) int</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#StaticHeuristic.evalWhiteRooks">func (s StaticHeuristic) evalWhiteRooks(b *gen.Board) int</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#StaticHeuristic.initFromBoard">func (s *StaticHeuristic) initFromBoard(b *gen.Board)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#StaticHeuristic.isDraw">func (s StaticHeuristic) isDraw(b *gen.Board) bool</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#StaticHeuristic.materialValue">func (s StaticHeuristic) materialValue() int</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#StaticHeuristic.whiteEvaluation">func (s StaticHeuristic) whiteEvaluation(b *gen.Board) int</a></dd>
+				
+			
+			
+		</dl>
+
+		
+
+		
+			<h4>Package files</h4>
+			<p>
+			<span style="font-size:90%">
+			
+				<a href="/target/basiceval.go">basiceval.go</a>
+			
+				<a href="/target/eval.go">eval.go</a>
+			
+				<a href="/target/globals.go">globals.go</a>
+			
+				<a href="/target/heuristic.go">heuristic.go</a>
+			
+				<a href="/target/static.go">static.go</a>
+			
+			</span>
+			</p>
+		
+	
+		
+		
+			<h2 id="variables">Variables</h2>
+			
+				<pre>var (
+    <span class="comment">//Pawn Position value table</span>
+    <span class="comment">//Mirrored for black pieces</span>
+    PawnTable = []int{
+        0, 0, 0, 0, 0, 0, 0, 0,
+        50, 50, 50, 50, 50, 50, 50, 50,
+        10, 10, 20, 30, 30, 20, 10, 10,
+        5, 5, 10, 27, 27, 10, 5, 5,
+        0, 0, 0, 25, 25, 0, 0, 0,
+        5, -5, -10, 0, 0, -10, -5, 5,
+        5, 10, 10, -25, -25, 10, 10, 5,
+        0, 0, 0, 0, 0, 0, 0, 0,
+    }
+
+    <span class="comment">//knight position value table</span>
+    <span class="comment">//mirrored for black pieces</span>
+    KnightTable = []int{
+        -50, -40, -30, -30, -30, -30, -40, -50,
+        -40, -20, 0, 0, 0, 0, -20, -40,
+        -30, 0, 10, 15, 15, 10, 0, -30,
+        -30, 5, 15, 20, 20, 15, 5, -30,
+        -30, 0, 15, 20, 20, 15, 0, -30,
+        -30, 5, 10, 15, 15, 10, 5, -30,
+        -40, -20, 0, 5, 5, 0, -20, -40,
+        -50, -40, -20, -30, -30, -20, -40, -50,
+    }
+
+    <span class="comment">//bishop position value table</span>
+    <span class="comment">//mirrored for black pieces</span>
+    <span class="comment">//emphasis on staying away from board edges</span>
+    BishopTable = []int{
+        -20, -10, -10, -10, -10, -10, -10, -20,
+        -10, 0, 0, 0, 0, 0, 0, -10,
+        -10, 0, 5, 10, 10, 5, 0, -10,
+        -10, 5, 5, 10, 10, 5, 5, -10,
+        -10, 0, 10, 10, 10, 10, 0, -10,
+        -10, 10, 10, 10, 10, 10, 10, -10,
+        -10, 5, 0, 0, 0, 0, 5, -10,
+        -20, -10, -40, -10, -10, -40, -10, -20,
+    }
+
+    <span class="comment">//king position value table for early/mid game</span>
+    <span class="comment">//Mirrored for black pieces</span>
+    <span class="comment">//security found in corners on home rank</span>
+    KingTable = []int{
+        -30, -40, -40, -50, -50, -40, -40, -30,
+        -30, -40, -40, -50, -50, -40, -40, -30,
+        -30, -40, -40, -50, -50, -40, -40, -30,
+        -30, -40, -40, -50, -50, -40, -40, -30,
+        -20, -30, -30, -40, -40, -30, -30, -20,
+        -10, -20, -20, -20, -20, -20, -20, -10,
+        20, 20, 0, 0, 0, 0, 20, 20,
+        20, 30, 10, 0, 0, 10, 30, 20,
+    }
+
+    <span class="comment">//King endgame position value</span>
+    <span class="comment">//mirrored for black, though largely semetrical</span>
+    <span class="comment">//best security is found in the centre</span>
+    KingEndGame = []int{
+        -50, -40, -30, -20, -20, -30, -40, -50,
+        -30, -20, -10, 0, 0, -10, -20, -30,
+        -30, -10, 20, 30, 30, 20, -10, -30,
+        -30, -10, 30, 40, 40, 30, -10, -30,
+        -30, -10, 30, 40, 40, 30, -10, -30,
+        -30, -10, 20, 30, 30, 20, -10, -30,
+        -30, -30, 0, 0, 0, 0, -30, -30,
+        -50, -30, -30, -30, -30, -30, -30, -50,
+    }
+
+    <span class="comment">//rook position table</span>
+    <span class="comment">//mirrored for black</span>
+    RookTable = []int{
+        0, 0, 0, 0, 0, 0, 0, 0,
+        15, 15, 15, 15, 15, 15, 15, 15,
+        0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0,
+        -10, 0, 0, 10, 10, 0, 0, -10,
+    }
+
+    <span class="comment">//queen position value table</span>
+    <span class="comment">//mirrored black, though semetrical</span>
+    QueenTable = []int{
+        -10, -10, -10, -10, -10, -10, -10, -10,
+        -10, 0, 0, 0, 0, 0, 0, 0,
+        -10, 0, 5, 5, 5, 5, 0, -10,
+        -10, 0, 5, 10, 10, 5, 0, -10,
+        -10, 0, 5, 10, 10, 5, 0, -10,
+        -10, 0, 5, 5, 5, 5, 0, -10,
+        -10, 0, 0, 0, 0, 0, 0, -10,
+        -10, -10, -10, -10, -10, -10, -10, -10,
+    }
+    <span class="comment">//mirror provides reverse indexing for all</span>
+    <span class="comment">//position value tables</span>
+    Mirror = []int{
+        56, 57, 58, 59, 60, 61, 62, 63,
+        48, 49, 50, 51, 52, 53, 54, 55,
+        40, 41, 42, 43, 44, 45, 46, 47,
+        32, 33, 34, 35, 36, 37, 38, 39,
+        24, 25, 26, 27, 28, 29, 30, 31,
+        16, 17, 18, 19, 20, 21, 22, 23,
+        8, 9, 10, 11, 12, 13, 14, 15,
+        0, 1, 2, 3, 4, 5, 6, 7,
+    }
+
+    <span class="comment">//Distance from square to king square [sq][ksq]</span>
+    Distance [][]int
+
+    <span class="comment">//individual piece distances</span>
+    PawnOwnDistance      = []int{0, 8, 4, 2, 0, 0, 0, 0}
+    PawnOpponentDistance = []int{0, 2, 1, 0, 0, 0, 0, 0}
+    KnightDistance       = []int{0, 4, 4, 0, 0, 0, 0, 0}
+    BishopDistance       = []int{0, 5, 4, 3, 2, 1, 0, 0}
+    RookDistance         = []int{0, 7, 5, 4, 3, 0, 0, 0}
+    QueenDistance        = []int{0, 10, 8, 5, 4, 0, 0, 0}
+
+    <span class="comment">//masks for calculating passed pawns</span>
+    <span class="comment">//isolated pawns and backwards pawns on </span>
+    <span class="comment">//any square</span>
+    PassedWhite   []uint64
+    PassedBlack   []uint64
+    IsolatedWhite []uint64
+    IsolatedBlack []uint64
+    BackWhite     []uint64
+    BackBlack     []uint64
+
+    <span class="comment">//king pawn weak/strong shielding </span>
+    StrongShieldWhite []uint64
+    StrongShieldBlack []uint64
+    WeakShieldBlack   []uint64
+    WeakShieldWhite   []uint64
+
+    <span class="comment">//Piece Values for evaluation</span>
+    PawnValue   = uint(100)
+    KnightValue = uint(320)
+    BishopValue = uint(325)
+    RookValue   = uint(500)
+    QueenValue  = uint(975)
+    KingValue   = uint(32767)
+
+    WhiteSquares = uint64(0xAAAAAAAAAAAAAAAA)
+    BlackSquares = uint64(0x5555555555555555)
+
+    <span class="comment">//Bonuses</span>
+    PassedPawnBonus     = 100
+    BishopPairBonus     = 325
+    RookPassedPawnBonus = 500
+
+    <span class="comment">//Penalties</span>
+    DoublePawnPenalty   = 100
+    IsolatedPawnPenalty = 100
+    BackPawnPenalty     = 100
+)</pre>
+				
+			
+		
+		
+			
+			
+			<h2 id="Eval">func <a href="/target/heuristic.go?s=533:560#L36">Eval</a></h2>
+			<pre>func Eval(b *gen.Board) int</pre>
+			
+			
+		
+			
+			
+			<h2 id="Value">func <a href="/target/globals.go?s=8008:8035#L277">Value</a></h2>
+			<pre>func Value(piece byte) uint</pre>
+			<p>
+Value returns the evaluation value of a piece type based of its piece code
+</p>
+
+			
+		
+			
+			
+			<h2 id="init">func <a href="/target/eval.go?s=409:420#L9">init</a></h2>
+			<pre>func init()</pre>
+			<p>
+init initialises the global data for evaluation
+</p>
+
+			
+		
+			
+			
+			<h2 id="initDistanceArray">func <a href="/target/globals.go?s=4628:4652#L164">initDistanceArray</a></h2>
+			<pre>func initDistanceArray()</pre>
+			<p>
+initDistanceArray initialises the distance array with distances from square a
+to square b
+</p>
+
+			
+		
+			
+			
+			<h2 id="initialiseGlobals">func <a href="/target/globals.go?s=4435:4459#L156">initialiseGlobals</a></h2>
+			<pre>func initialiseGlobals()</pre>
+			<p>
+initialiseGlobals initialises all data used during the evaluation process
+</p>
+
+			
+		
+			
+			
+			<h2 id="initialiseKingShields">func <a href="/target/globals.go?s=6918:6946#L239">initialiseKingShields</a></h2>
+			<pre>func initialiseKingShields()</pre>
+			<p>
+initialiseKingShields initialises all pawn shield masks
+white shields are generated first and then black shields are
+initialised from the mirror of the white values
+</p>
+
+			
+		
+			
+			
+			<h2 id="initialisePawnMasks">func <a href="/target/globals.go?s=5241:5267#L184">initialisePawnMasks</a></h2>
+			<pre>func initialisePawnMasks()</pre>
+			<p>
+initialisePawnMasks initialises all pawn related masks
+first white id generated and then black is initialised with the mirror
+of the white values
+</p>
+
+			
+		
+		
+			
+			
+			<h2 id="Evaluator">type <a href="/target/eval.go?s=307:357#L4">Evaluator</a></h2>
+			<pre>type Evaluator interface {
+    Eval(*gen.Board) int
+}</pre>
+			<p>
+Evaluator interface is used to allow polymorphism in the evaluation
+meaning different methods and implementations can be plugged in higher up
+in the system
+</p>
+
+
+			
+
+			
+
+			
+
+			
+
+			
+		
+			
+			
+			<h2 id="StaticHeuristic">type <a href="/target/static.go?s=230:589#L1">StaticHeuristic</a></h2>
+			<pre>type StaticHeuristic struct {
+    <span class="comment">//number of each piece type</span>
+    wpawns,
+    wrooks,
+    wknights,
+    wbishops,
+    wqueens uint
+
+    bpawns,
+    brooks,
+    bknights,
+    bbishops,
+    bqueens uint
+
+    <span class="comment">//king squares</span>
+    bkingsq, wkingsq uint
+
+    <span class="comment">//material for white and black</span>
+    wmat, bmat uint
+
+    <span class="comment">//total number of pieces</span>
+    wtotal, btotal uint
+
+    <span class="comment">//passed pawns</span>
+    wpassedpawns, bpassedpawns uint64
+}</pre>
+			<p>
+StaticHeuristic is an evaluation method for static analysis on the game board
+the structure contains various information from the game board and is initialised
+upon each evaluation
+</p>
+
+
+			
+
+			
+
+			
+
+			
+
+			
+				
+				<h3 id="StaticHeuristic.Eval">func (*StaticHeuristic) <a href="/target/static.go?s=1137:1185#L43">Eval</a></h3>
+				<pre>func (s *StaticHeuristic) Eval(b *gen.Board) int</pre>
+				<p>
+Eval takes into account the following considerations during the
+evaluation of the chess position
+</p>
+<pre>material value
+king safety
+bishop pair
++bishop val as num pawns decreases
+-knight val as num pawns decreases
+decrease score if double pawn
+
+TODO:
+lower queen value if moving early
+bonus for mobility
+bonus for threatening other pieces
+bonus for protection of own peices
+bonus for pawns close to promotion
+bonus for development speed of minor pieces in the opening
+</pre>
+
+				
+				
+			
+				
+				<h3 id="StaticHeuristic.blackEvaluation">func (StaticHeuristic) <a href="/target/static.go?s=3725:3783#L129">blackEvaluation</a></h3>
+				<pre>func (s StaticHeuristic) blackEvaluation(b *gen.Board) int</pre>
+				<p>
+blackEvaluation is a wrapper function for all black piece evaluation functions
+</p>
+
+				
+				
+			
+				
+				<h3 id="StaticHeuristic.evalBlackBishops">func (StaticHeuristic) <a href="/target/static.go?s=8114:8173#L277">evalBlackBishops</a></h3>
+				<pre>func (s StaticHeuristic) evalBlackBishops(b *gen.Board) int</pre>
+				<p>
+evalBlackBishops evaluates the position and strength of the black bishops
+including bonus for having the bishop pair
+</p>
+
+				
+				
+			
+				
+				<h3 id="StaticHeuristic.evalBlackKing">func (StaticHeuristic) <a href="/target/static.go?s=9272:9328#L314">evalBlackKing</a></h3>
+				<pre>func (s StaticHeuristic) evalBlackKing(b *gen.Board) int</pre>
+				<p>
+evalBlackKing evaluates the position and value of the black king
+including endgame positioning and Pawn Shielding
+</p>
+
+				
+				
+			
+				
+				<h3 id="StaticHeuristic.evalBlackKnights">func (StaticHeuristic) <a href="/target/static.go?s=7809:7868#L269">evalBlackKnights</a></h3>
+				<pre>func (s StaticHeuristic) evalBlackKnights(b *gen.Board) int</pre>
+				<p>
+evalBlackKnights evaluates the position and strength of the black knights
+</p>
+
+				
+				
+			
+				
+				<h3 id="StaticHeuristic.evalBlackPawns">func (*StaticHeuristic) <a href="/target/static.go?s=6949:7007#L237">evalBlackPawns</a></h3>
+				<pre>func (s *StaticHeuristic) evalBlackPawns(b *gen.Board) int</pre>
+				<p>
+evalBlackPawns evaluates the position and strength of the black pawns
+on the board
+including passed pawns, backwards pawns, and doubled pawns
+</p>
+
+				
+				
+			
+				
+				<h3 id="StaticHeuristic.evalBlackQueens">func (StaticHeuristic) <a href="/target/static.go?s=8976:9034#L306">evalBlackQueens</a></h3>
+				<pre>func (s StaticHeuristic) evalBlackQueens(b *gen.Board) int</pre>
+				<p>
+evalBlackQueens evaluates the position and strength of the black queens
+</p>
+
+				
+				
+			
+				
+				<h3 id="StaticHeuristic.evalBlackRooks">func (StaticHeuristic) <a href="/target/static.go?s=8504:8561#L290">evalBlackRooks</a></h3>
+				<pre>func (s StaticHeuristic) evalBlackRooks(b *gen.Board) int</pre>
+				<p>
+evalBlackRooks evaluates the position and strength of the black rooks
+including a bonus for the passed pawns
+</p>
+
+				
+				
+			
+				
+				<h3 id="StaticHeuristic.evalGenericBlackPiece">func (StaticHeuristic) <a href="/target/static.go?s=10024:10114#L338">evalGenericBlackPiece</a></h3>
+				<pre>func (s StaticHeuristic) evalGenericBlackPiece(pieces uint64, values, distances []int) int</pre>
+				<p>
+evalGenericBlackPieces provides evaluation for repeated functionality used for
+almost all pieces.
+this includes basic position value, from pregenerated tables and
+distance from the white king
+</p>
+
+				
+				
+			
+				
+				<h3 id="StaticHeuristic.evalGenericWhitePiece">func (StaticHeuristic) <a href="/target/static.go?s=9545:9635#L322">evalGenericWhitePiece</a></h3>
+				<pre>func (s StaticHeuristic) evalGenericWhitePiece(pieces uint64, values, distances []int) int</pre>
+				<p>
+evalGenericWhitePieces provides evaluation for repeated functionality used for
+almost all pieces.
+this includes basic position value, from pregenerated tables and
+distance from the black king
+</p>
+
+				
+				
+			
+				
+				<h3 id="StaticHeuristic.evalWhiteBishops">func (StaticHeuristic) <a href="/target/static.go?s=5567:5626#L192">evalWhiteBishops</a></h3>
+				<pre>func (s StaticHeuristic) evalWhiteBishops(b *gen.Board) int</pre>
+				<p>
+evalWhiteBishops evaluates the position and strength of all white bishops
+including a bonus for having the bishop pair
+</p>
+
+				
+				
+			
+				
+				<h3 id="StaticHeuristic.evalWhiteKing">func (StaticHeuristic) <a href="/target/static.go?s=6729:6785#L230">evalWhiteKing</a></h3>
+				<pre>func (s StaticHeuristic) evalWhiteKing(b *gen.Board) int</pre>
+				<p>
+evalWhiteKing evaluates the position of the white king
+including PawnShield and endgame positioning
+</p>
+
+				
+				
+			
+				
+				<h3 id="StaticHeuristic.evalWhiteKnights">func (StaticHeuristic) <a href="/target/static.go?s=5260:5319#L184">evalWhiteKnights</a></h3>
+				<pre>func (s StaticHeuristic) evalWhiteKnights(b *gen.Board) int</pre>
+				<p>
+evalWhiteKnights evaluates the position and strength of all white knights on the board
+</p>
+
+				
+				
+			
+				
+				<h3 id="StaticHeuristic.evalWhitePawns">func (*StaticHeuristic) <a href="/target/static.go?s=4395:4453#L152">evalWhitePawns</a></h3>
+				<pre>func (s *StaticHeuristic) evalWhitePawns(b *gen.Board) int</pre>
+				<p>
+evalWhitePawns evaluates the position and strength of the white pawns
+on the board
+including passed pawns, backwards pawns, and doubled pawns
+</p>
+
+				
+				
+			
+				
+				<h3 id="StaticHeuristic.evalWhiteQueens">func (StaticHeuristic) <a href="/target/static.go?s=6447:6505#L222">evalWhiteQueens</a></h3>
+				<pre>func (s StaticHeuristic) evalWhiteQueens(b *gen.Board) int</pre>
+				<p>
+evalWhiteQueens evaluates the position and strength of all white queens
+currently on the board
+</p>
+
+				
+				
+			
+				
+				<h3 id="StaticHeuristic.evalWhiteRooks">func (StaticHeuristic) <a href="/target/static.go?s=5950:6007#L205">evalWhiteRooks</a></h3>
+				<pre>func (s StaticHeuristic) evalWhiteRooks(b *gen.Board) int</pre>
+				<p>
+evalWhiteRooks evaluates the position and value of all white rooks
+including a bonus for passed pawns
+</p>
+
+				
+				
+			
+				
+				<h3 id="StaticHeuristic.initFromBoard">func (*StaticHeuristic) <a href="/target/static.go?s=1453:1506#L59">initFromBoard</a></h3>
+				<pre>func (s *StaticHeuristic) initFromBoard(b *gen.Board)</pre>
+				<p>
+initFromBoard initialises the heurisitc structure with material values
+of the board
+</p>
+
+				
+				
+			
+				
+				<h3 id="StaticHeuristic.isDraw">func (StaticHeuristic) <a href="/target/static.go?s=2820:2870#L99">isDraw</a></h3>
+				<pre>func (s StaticHeuristic) isDraw(b *gen.Board) bool</pre>
+				<p>
+isDraw checks the state for common draw positions
+</p>
+<pre>K vs. KN
+K vs. KB
+</pre>
+
+				
+				
+			
+				
+				<h3 id="StaticHeuristic.materialValue">func (StaticHeuristic) <a href="/target/static.go?s=2556:2600#L89">materialValue</a></h3>
+				<pre>func (s StaticHeuristic) materialValue() int</pre>
+				<p>
+materialValue evaluates the material currently on the board
+it penalises loss of pieces in the late game and encourages
+taking of pieces for the current winner
+</p>
+
+				
+				
+			
+				
+				<h3 id="StaticHeuristic.whiteEvaluation">func (StaticHeuristic) <a href="/target/static.go?s=4015:4073#L139">whiteEvaluation</a></h3>
+				<pre>func (s StaticHeuristic) whiteEvaluation(b *gen.Board) int</pre>
+				<p>
+whiteEvaluation is a wrapper function for all white piece evaluation functions
+</p>
+
+				
+				
+			
+		
+		</div>
+	
+
+	
+
+
+
+
+
+
+

@@ -1,0 +1,5 @@
+package search
+
+import (
+	"chess/ai/gen"
+)

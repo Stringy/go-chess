@@ -1,0 +1,77 @@
+recognized 'normal' (-1) as variant normal
+recognized 'normal' (-1) as variant normal
+recognized 'normal' (-1) as variant normal
+shuffleOpenings = 0
+resolved -adobe-helvetica-bold-r-normal--34-240-100-100-p-182-iso8859-1 at pixel size 34
+  to -adobe-helvetica-bold-r-normal--34-240-100-100-p-182-iso8859-1
+resolved -adobe-helvetica-bold-r-normal--11-80-100-100-p-60-iso8859-1 at pixel size 12
+  to -adobe-helvetica-bold-r-normal--11-80-100-100-p-60-iso8859-1
+resolved -adobe-helvetica-medium-r-normal--14-100-100-100-p-76-iso8859-1 at pixel size 14
+  to -adobe-helvetica-medium-r-normal--14-100-100-100-p-76-iso8859-1
+xboard 4.5.3 + Stringy
+Reset(1, 0) from gameMode 0
+recognized 'normal' (-1) as variant normal
+GameEnds(0, (null), 2)
+shuffleOpenings = 0
+TC string = ':40/300'
+mps=40 tc=300000 inc=0
+TC string = ':40/300'
+mps=40 tc=300000 inc=0
+671 >first : xboard
+protover 2
+shuffleOpenings = 0
+1125 <first : xboard
+1125 <first : protover 2
+1125 <first : 
+1125 <first : protover 2
+1125 <first : 
+10680 >first : new
+random
+10681 >first : level 40 5 0
+10681 >first : post
+10681 >first : hard
+10681 <first : new
+10681 <first : random
+10681 <first : level 40 5 0
+10681 <first : post
+10681 <first : 
+10681 <first : random
+10681 <first : level 40 5 0
+10681 <first : post
+10681 <first : 
+10681 <first : hard
+10681 <first : 
+10681 <first : 
+7 0 4 7 0 4 Legality test? e2e4
+TC string = ':40/300'
+mps=40 tc=300000 inc=0
+CoordsToAlgebraic, piece=0 (4,1)-(4,3) -
+7 0 4 7 0 4 Legality test? e2e4
+movetype=21, promochar=0=-
+MateTest: K=1, my=16, his=16
+move: e2e4
+, parse: e4 (
+)
+MateTest: K=1, my=16, his=16
+repeat test fmm=1 bmm=0 ep=-4, reps=6
+1 ep=-3
+0 ep=-4
+nps: w=-1, b=-1
+nps: w=-1, b=-1
+time odds: 1.000000 1.000000 
+15976 >first : time 30000
+15976 >first : otim 30000
+book hit = (NULL)
+15976 >first : e2e4
+15977 <first : time 30000
+15977 <first : otim 30000
+15977 <first : e2e4
+15977 <first : 
+15977 <first : otim 30000
+15977 <first : e2e4
+15977 <first : 
+GameEnds(28, xboard exit, 2)
+Interrupting first
+22471 >first : result * {xboard exit}
+22471 >first : force
+22471 >first : quit

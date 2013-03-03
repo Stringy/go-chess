@@ -1,0 +1,373 @@
+<!--
+	Copyright 2009 The Go Authors. All rights reserved.
+	Use of this source code is governed by a BSD-style
+	license that can be found in the LICENSE file.
+-->
+
+	
+		<div id="short-nav">
+			<dl>
+			<dd><code>import "chess/ai/search"</code></dd>
+			</dl>
+			<dl>
+			<dd><a href="#overview" class="overviewLink">Overview</a></dd>
+			<dd><a href="#index">Index</a></dd>
+			
+			
+			</dl>
+		</div>
+		<!-- The package's Name is printed as title by the top-level template -->
+		<div id="overview" class="toggleVisible">
+			<div class="collapsed">
+				<h2 class="toggleButton" title="Click to show Overview section">Overview ▹</h2>
+			</div>
+			<div class="expanded">
+				<h2 class="toggleButton" title="Click to hide Overview section">Overview ▾</h2>
+				<p>
+search package provides functionality for searching through a chess game tree
+to calculate the values of each node of the tree and come up with the best move
+</p>
+
+			</div>
+		</div>
+		
+	
+		<h2 id="index">Index</h2>
+		<!-- Table of contents for API; must be named manual-nav to turn off auto nav. -->
+		<div id="manual-nav">
+			<dl>
+			
+			
+			
+				
+				<dd><a href="#evalMove">func evalMove(b *gen.Board, move *gen.Move, evaluator eval.Evaluator) int</a></dd>
+			
+				
+				<dd><a href="#init">func init()</a></dd>
+			
+				
+				<dd><a href="#quiescenceSearch">func quiescenceSearch(b *gen.Board, evaluator eval.Evaluator, alpha, beta int) int</a></dd>
+			
+			
+				
+				<dd><a href="#AlphaBeta">type AlphaBeta</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#AlphaBeta.Search">func (a AlphaBeta) Search(b *gen.Board, depth int) int</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#AlphaBeta.alpha_beta">func (s *AlphaBeta) alpha_beta(board *gen.Board, a, b, depth int) int</a></dd>
+				
+			
+				
+				<dd><a href="#IterativeSearch">type IterativeSearch</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#IterativeSearch.Search">func (i IterativeSearch) Search(b *gen.Board, depth int) int</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#IterativeSearch.iterative_search">func (i IterativeSearch) iterative_search(board *gen.Board, score *int, a, b int, stopchan chan interface{})</a></dd>
+				
+			
+				
+				<dd><a href="#Mtdf">type Mtdf</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#Mtdf.Search">func (m Mtdf) Search(b *gen.Board) int</a></dd>
+				
+			
+				
+				<dd><a href="#Negascout">type Negascout</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#Negascout.Search">func (n Negascout) Search(b *gen.Board, depth int) int</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#Negascout.negascout">func (n Negascout) negascout(board *gen.Board, alpha, beta, depth int) int</a></dd>
+				
+			
+				
+				<dd><a href="#PVSearch">type PVSearch</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#NewPVSearch">func NewPVSearch(evaluator eval.Evaluator) *PVSearch</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#PVSearch.Search">func (pvs *PVSearch) Search(b *gen.Board, depth int) int</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#PVSearch.alpha_beta_pvs">func (pvs *PVSearch) alpha_beta_pvs(b *gen.Board, depth, alpha, beta int) int</a></dd>
+				
+			
+				
+				<dd><a href="#Searcher">type Searcher</a></dd>
+				
+				
+			
+			
+		</dl>
+
+		
+
+		
+			<h4>Package files</h4>
+			<p>
+			<span style="font-size:90%">
+			
+				<a href="/target/alphabeta.go">alphabeta.go</a>
+			
+				<a href="/target/iterative.go">iterative.go</a>
+			
+				<a href="/target/mtdf.go">mtdf.go</a>
+			
+				<a href="/target/negascout.go">negascout.go</a>
+			
+				<a href="/target/pvs.go">pvs.go</a>
+			
+				<a href="/target/quiescent.go">quiescent.go</a>
+			
+				<a href="/target/search.go">search.go</a>
+			
+			</span>
+			</p>
+		
+	
+		
+		
+		
+			
+			
+			<h2 id="evalMove">func <a href="/target/quiescent.go?s=718:791#L28">evalMove</a></h2>
+			<pre>func evalMove(b *gen.Board, move *gen.Move, evaluator eval.Evaluator) int</pre>
+			
+			
+		
+			
+			
+			<h2 id="init">func <a href="/target/search.go?s=390:401#L5">init</a></h2>
+			<pre>func init()</pre>
+			
+			
+		
+			
+			
+			<h2 id="quiescenceSearch">func <a href="/target/quiescent.go?s=61:143#L1">quiescenceSearch</a></h2>
+			<pre>func quiescenceSearch(b *gen.Board, evaluator eval.Evaluator, alpha, beta int) int</pre>
+			
+			
+		
+		
+			
+			
+			<h2 id="AlphaBeta">type <a href="/target/alphabeta.go?s=297:363#L4">AlphaBeta</a></h2>
+			<pre>type AlphaBeta struct {
+    Evaluator eval.Evaluator
+    Nodes     int
+}</pre>
+			<p>
+AlphaBeta structure used to conform to the Searcher interface and contains
+and eval.Evaluator for evaluating individual nodes at the bottom of the search
+it also counts the number of nodes it has searched
+</p>
+
+
+			
+
+			
+
+			
+
+			
+
+			
+				
+				<h3 id="AlphaBeta.Search">func (AlphaBeta) <a href="/target/alphabeta.go?s=484:538#L11">Search</a></h3>
+				<pre>func (a AlphaBeta) Search(b *gen.Board, depth int) int</pre>
+				<p>
+Search is the function to conform to the Searcher interface
+is the entry point to the alpha beta pruning algorithm
+</p>
+
+				
+				
+			
+				
+				<h3 id="AlphaBeta.alpha_beta">func (*AlphaBeta) <a href="/target/alphabeta.go?s=889:958#L21">alpha_beta</a></h3>
+				<pre>func (s *AlphaBeta) alpha_beta(board *gen.Board, a, b, depth int) int</pre>
+				<p>
+alpha_beta is a standard alpha beta pruning algorithm.
+it searches based on the current turn and based on narrowing the search window
+through the use of alpha beta values
+</p>
+
+				
+				
+			
+		
+			
+			
+			<h2 id="IterativeSearch">type <a href="/target/iterative.go?s=84:157#L1">IterativeSearch</a></h2>
+			<pre>type IterativeSearch struct {
+    Evaluator eval.Evaluator
+    Seconds   uint
+}</pre>
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+				
+				<h3 id="IterativeSearch.Search">func (IterativeSearch) <a href="/target/iterative.go?s=159:219#L6">Search</a></h3>
+				<pre>func (i IterativeSearch) Search(b *gen.Board, depth int) int</pre>
+				
+				
+				
+			
+				
+				<h3 id="IterativeSearch.iterative_search">func (IterativeSearch) <a href="/target/iterative.go?s=550:658#L23">iterative_search</a></h3>
+				<pre>func (i IterativeSearch) iterative_search(board *gen.Board, score *int, a, b int, stopchan chan interface{})</pre>
+				
+				
+				
+			
+		
+			
+			
+			<h2 id="Mtdf">type <a href="/target/mtdf.go?s=44:75#L1">Mtdf</a></h2>
+			<pre>type Mtdf struct {
+    Depth int
+}</pre>
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+				
+				<h3 id="Mtdf.Search">func (Mtdf) <a href="/target/mtdf.go?s=77:115#L1">Search</a></h3>
+				<pre>func (m Mtdf) Search(b *gen.Board) int</pre>
+				
+				
+				
+			
+		
+			
+			
+			<h2 id="Negascout">type <a href="/target/negascout.go?s=79:130#L1">Negascout</a></h2>
+			<pre>type Negascout struct {
+    Evaluator eval.Evaluator
+}</pre>
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+				
+				<h3 id="Negascout.Search">func (Negascout) <a href="/target/negascout.go?s=132:186#L5">Search</a></h3>
+				<pre>func (n Negascout) Search(b *gen.Board, depth int) int</pre>
+				
+				
+				
+			
+				
+				<h3 id="Negascout.negascout">func (Negascout) <a href="/target/negascout.go?s=291:365#L11">negascout</a></h3>
+				<pre>func (n Negascout) negascout(board *gen.Board, alpha, beta, depth int) int</pre>
+				
+				
+				
+			
+		
+			
+			
+			<h2 id="PVSearch">type <a href="/target/pvs.go?s=76:141#L1">PVSearch</a></h2>
+			<pre>type PVSearch struct {
+    Evaluator eval.Evaluator
+    Nodes     int
+}</pre>
+			
+
+			
+
+			
+
+			
+
+			
+				
+				<h3 id="NewPVSearch">func <a href="/target/pvs.go?s=143:195#L5">NewPVSearch</a></h3>
+				<pre>func NewPVSearch(evaluator eval.Evaluator) *PVSearch</pre>
+				
+				
+			
+
+			
+				
+				<h3 id="PVSearch.Search">func (*PVSearch) <a href="/target/pvs.go?s=277:333#L11">Search</a></h3>
+				<pre>func (pvs *PVSearch) Search(b *gen.Board, depth int) int</pre>
+				
+				
+				
+			
+				
+				<h3 id="PVSearch.alpha_beta_pvs">func (*PVSearch) <a href="/target/pvs.go?s=506:583#L17">alpha_beta_pvs</a></h3>
+				<pre>func (pvs *PVSearch) alpha_beta_pvs(b *gen.Board, depth, alpha, beta int) int</pre>
+				
+				
+				
+			
+		
+			
+			
+			<h2 id="Searcher">type <a href="/target/search.go?s=332:388#L1">Searcher</a></h2>
+			<pre>type Searcher interface {
+    Search(*gen.Board, int) int
+}</pre>
+			<p>
+Searcher interface is to provide polymorphism to allow for
+different search algorithms to be easily plugged in higher up
+</p>
+
+
+			
+
+			
+
+			
+
+			
+
+			
+		
+		</div>
+	
+
+	
+
+
+
+
+
+
+
