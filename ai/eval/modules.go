@@ -85,7 +85,7 @@ func (p *PawnModule) eval(b *gen.Board) int {
 	score := 0
 
 	for twpawns != 0 {
-		sq := gen.FirstOne(twpawns)
+		sq := gen.LSB(twpawns)
 		score += WhitePawnTable[sq]
 		score += PawnOpponentDistance[Distance[sq][b.BKingSq]]
 		score += numAttackedPieces(b.WhitePieces, gen.WhitePawnAttacks[sq]) * DefenseBonus //defending pieces
@@ -113,7 +113,7 @@ func (p *PawnModule) eval(b *gen.Board) int {
 	//black eval
 	tbpawns := b.BlackPawns
 	for tbpawns != 0 {
-		sq := gen.FirstOne(tbpawns)
+		sq := gen.LSB(tbpawns)
 		score -= BlackPawnTable[sq]
 		score -= PawnOpponentDistance[Distance[sq][b.WKingSq]]
 		score -= numAttackedPieces(b.BlackPieces, gen.BlackPawnAttacks[sq]) * DefenseBonus
@@ -165,7 +165,7 @@ func (r *RookModule) eval(b *gen.Board) int {
 	tbpawns := b.BlackPawns
 
 	for twpawns != 0 {
-		sq := gen.FirstOne(twpawns)
+		sq := gen.LSB(twpawns)
 		if PassedWhite[sq]&b.BlackPawns == 0 {
 			r.num_passed_white++
 			wpassedpawns ^= gen.BitSet[sq]
@@ -174,7 +174,7 @@ func (r *RookModule) eval(b *gen.Board) int {
 	}
 
 	for tbpawns != 0 {
-		sq := gen.FirstOne(tbpawns)
+		sq := gen.LSB(tbpawns)
 		if PassedBlack[sq]&b.WhitePawns == 0 {
 			r.num_passed_black++
 			bpassedpawns ^= gen.BitSet[sq]
@@ -183,14 +183,14 @@ func (r *RookModule) eval(b *gen.Board) int {
 	}
 
 	for twrooks != 0 {
-		sq := gen.FirstOne(twrooks)
+		sq := gen.LSB(twrooks)
 		score += RookTable[sq]
 		score += RookDistance[Distance[sq][b.BKingSq]]
 		score += numAttackedPieces(b.BlackPieces, gen.RookMoves(b, sq)) * PinAndForkBonus
 		score += numAttackedPieces(b.WhitePieces, gen.RookMoves(b, sq)) * DefenseBonus
 		pawnsOnFile := gen.FileMask[sq] & wpassedpawns
 		if pawnsOnFile != 0 {
-			if sq < gen.LastOne(pawnsOnFile) {
+			if sq < gen.MSB(pawnsOnFile) {
 				score += RookPassedPawnBonus
 			}
 		}
@@ -199,14 +199,14 @@ func (r *RookModule) eval(b *gen.Board) int {
 
 	tbrooks := b.BlackRooks
 	for tbrooks != 0 {
-		sq := gen.FirstOne(tbrooks)
+		sq := gen.LSB(tbrooks)
 		score -= RookTable[Mirror[sq]]
 		score -= RookDistance[Distance[sq][b.WKingSq]]
 		score -= numAttackedPieces(b.WhitePieces, gen.RookMoves(b, sq)) * PinAndForkBonus
 		score -= numAttackedPieces(b.BlackPieces, gen.RookMoves(b, sq)) * DefenseBonus
 		pawnsOnFile := gen.FileMask[sq] & bpassedpawns
 		if pawnsOnFile != 0 {
-			if sq < gen.LastOne(pawnsOnFile) {
+			if sq < gen.MSB(pawnsOnFile) {
 				score -= RookPassedPawnBonus
 			}
 		}
@@ -232,7 +232,7 @@ func (bish *BishopModule) eval(b *gen.Board) int {
 		score += BishopPairBonus
 	}
 	for twbishops != 0 {
-		sq := gen.FirstOne(twbishops)
+		sq := gen.LSB(twbishops)
 		score += BishopTable[sq]
 		score += BishopDistance[Distance[sq][b.BKingSq]]
 		score += numAttackedPieces(b.BlackPieces, gen.BishopMoves(b, sq)) * PinAndForkBonus
@@ -245,7 +245,7 @@ func (bish *BishopModule) eval(b *gen.Board) int {
 		score -= BishopPairBonus
 	}
 	for tbbishops != 0 {
-		sq := gen.FirstOne(tbbishops)
+		sq := gen.LSB(tbbishops)
 		score -= BishopTable[Mirror[sq]]
 		score -= BishopDistance[Distance[sq][b.WKingSq]]
 		score -= numAttackedPieces(b.WhitePieces, gen.BishopMoves(b, sq)) * PinAndForkBonus
@@ -267,7 +267,7 @@ func (k *KnightModule) eval(b *gen.Board) int {
 	twknights := b.WhiteKnights
 	score := 0
 	for twknights != 0 {
-		sq := gen.FirstOne(twknights)
+		sq := gen.LSB(twknights)
 		score += KnightTable[sq] + int(b.NumWPawns)
 		score += KnightDistance[Distance[sq][b.BKingSq]]
 		score += numAttackedPieces(b.BlackPieces, gen.KnightAttacks[sq]) * PinAndForkBonus
@@ -277,7 +277,7 @@ func (k *KnightModule) eval(b *gen.Board) int {
 
 	tbknights := b.BlackKnights
 	for tbknights != 0 {
-		sq := gen.FirstOne(tbknights)
+		sq := gen.LSB(tbknights)
 		score -= KnightTable[Mirror[sq]] + int(b.NumBPawns)
 		score -= KnightDistance[Distance[sq][b.BKingSq]]
 		score -= numAttackedPieces(b.WhitePieces, gen.KnightAttacks[sq]) * PinAndForkBonus
@@ -299,7 +299,7 @@ func (q *QueenModule) eval(b *gen.Board) int {
 	twqueens := b.WhiteQueens
 	score := 0
 	for twqueens != 0 {
-		sq := gen.FirstOne(twqueens)
+		sq := gen.LSB(twqueens)
 		score += QueenTable[sq]
 		score += QueenDistance[Distance[sq][b.BKingSq]]
 		mask := gen.QueenMoves(b, sq)
@@ -310,7 +310,7 @@ func (q *QueenModule) eval(b *gen.Board) int {
 
 	tbqueens := b.BlackQueens
 	for tbqueens != 0 {
-		sq := gen.FirstOne(tbqueens)
+		sq := gen.LSB(tbqueens)
 		score -= QueenTable[Mirror[sq]]
 		score -= QueenDistance[Distance[sq][b.BKingSq]]
 		mask := gen.QueenMoves(b, sq)

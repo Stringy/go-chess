@@ -56,7 +56,7 @@ func generateBlackPawnMoves(b *Board) []Move {
 
 	move.SetPiece(BlackPawn)
 	for pawns != 0 { //for all pawns currently in play
-		from := FirstOne(pawns) // get first pawn position (0-63)
+		from := LSB(pawns) // get first pawn position (0-63)
 		move.SetFrom(byte(from))
 		moves := BlackPawnMoves[from] & free //normal moves
 		if Ranks[from] == 7 && moves != 0 {  //on original square and not blocked
@@ -64,7 +64,7 @@ func generateBlackPawnMoves(b *Board) []Move {
 		}
 		moves |= BlackPawnAttacks[from] & b.WhitePieces //captures
 		for moves != 0 {                                //trim off all moves
-			to := FirstOne(moves) // get first move
+			to := LSB(moves) // get first move
 			move.SetTo(byte(to))
 			move.SetCapt(b.Squares[to])
 			if Ranks[to] == 1 { // promotion
@@ -111,7 +111,7 @@ func generateWhitePawnMoves(b *Board) []Move {
 
 	move.SetPiece(WhitePawn)
 	for pawns != 0 { //for all pawns currently in play
-		from := FirstOne(pawns) // get first pawn position (0-63)
+		from := LSB(pawns) // get first pawn position (0-63)
 		move.SetFrom(byte(from))
 		moves := WhitePawnMoves[from] & free //normal moves
 		if Ranks[from] == 2 && moves != 0 {
@@ -119,7 +119,7 @@ func generateWhitePawnMoves(b *Board) []Move {
 		}
 		moves |= WhitePawnAttacks[from] & b.BlackPieces //captures
 		for moves != 0 {                                //trim off all moves
-			to := FirstOne(moves) // get first move
+			to := LSB(moves) // get first move
 			move.SetTo(byte(to))
 			move.SetCapt(b.Squares[to])
 			if Ranks[to] == 8 { // promotion
@@ -165,11 +165,11 @@ func generateBlackKingMoves(b *Board) []Move {
 	king := b.BlackKing
 
 	for king != 0 {
-		from := FirstOne(king)
+		from := LSB(king)
 		move.SetFrom(byte(from))
 		moves := KingAttacks[from] & target
 		for moves != 0 {
-			to := FirstOne(moves)
+			to := LSB(moves)
 			move.SetTo(byte(to))
 			move.SetCapt(b.Squares[to])
 			movearr = append(movearr, move)
@@ -209,11 +209,11 @@ func generateWhiteKingMoves(b *Board) []Move {
 	king := b.WhiteKing
 
 	for king != 0 {
-		from := FirstOne(king)
+		from := LSB(king)
 		move.SetFrom(byte(from))
 		moves := KingAttacks[from] & target
 		for moves != 0 {
-			to := FirstOne(moves)
+			to := LSB(moves)
 			move.SetTo(byte(to))
 			move.SetCapt(b.Squares[to])
 			movearr = append(movearr, move)
@@ -254,11 +254,11 @@ func generateKnightMoves(b *Board, id byte, pieces uint64) []Move {
 	knights := pieces
 
 	for knights != 0 {
-		from := FirstOne(knights)
+		from := LSB(knights)
 		move.SetFrom(byte(from))
 		moves := KnightAttacks[from] & target
 		for moves != 0 {
-			to := FirstOne(moves)
+			to := LSB(moves)
 			move.SetTo(byte(to))
 			move.SetCapt(b.Squares[to])
 			movearr = append(movearr, move)
@@ -279,11 +279,11 @@ func generateSlidingMoves(b *Board, id byte, pieces uint64, moveGen func(*Board,
 	tempPieces := pieces
 
 	for tempPieces != 0 {
-		from := FirstOne(tempPieces)
+		from := LSB(tempPieces)
 		move.SetFrom(byte(from))
 		moves := moveGen(b, from)
 		for moves != 0 {
-			to := FirstOne(moves)
+			to := LSB(moves)
 			move.SetTo(byte(to))
 			move.SetCapt(b.Squares[to])
 			movearr = append(movearr, move)
@@ -359,7 +359,7 @@ func (b *Board) isAttacked(bits uint64, attacker byte) bool {
 	targ := bits
 	if attacker == BlackMove {
 		for targ != 0 {
-			to := FirstOne(targ)
+			to := LSB(targ)
 			if b.BlackPawns&WhitePawnAttacks[to] != 0 {
 				return true
 			}
@@ -397,7 +397,7 @@ func (b *Board) isAttacked(bits uint64, attacker byte) bool {
 		}
 	} else { //White Attacker
 		for targ != 0 {
-			to := FirstOne(targ)
+			to := LSB(targ)
 			if b.WhitePawns&WhitePawnAttacks[to] != 0 {
 				return true
 			}

@@ -4,9 +4,6 @@ import (
 	"chess/ai/eval"
 	"chess/ai/gen"
 	"chess/ai/search"
-	_ "fmt"
-	_ "strings"
-	_ "time"
 )
 
 var (
@@ -14,8 +11,7 @@ var (
 	ccPVSTable = search.NewPVSTable()
 	pvs        *search.PVSearch
 	iter       *search.IterativeSearch
-
-	rescount int
+	ab         *search.AlphaBeta
 )
 
 type result struct {
@@ -25,22 +21,24 @@ type result struct {
 }
 
 func init() {
+	ab = search.NewAlphaBeta()
 	pvs = search.NewPVSearch(evaluator)
 	pvs.PVSLine = ccPVSTable
 	iter = search.NewIterative(pvs, evaluator)
 }
 
 func GetBestMove(b gen.Board, depth int) *gen.Move {
-	bestmove, _ := pvs.Search(&b, depth)
+	bestmove, _ := ab.Search(&b, depth)
 	return &bestmove
 }
 
 func PonderUntilInput(b *gen.Board, stop chan struct{}) {
 	iter.Stop = stop
-	_, _ = iter.Search(b.Clone(), 0)
+	//	_, _ = iter.Search(b.Clone(), 0)
 }
 
 func PrintDebug() {
 	pvs.PrintDebug()
 	iter.PrintDebug()
+	ab.PrintDebug()
 }

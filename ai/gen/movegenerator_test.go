@@ -222,3 +222,10 @@ func TestCheckMateDetection(t *testing.T) {
 		t.Fail()
 	}
 }
+
+func TestCompleteGeneration(t *testing.T) {
+	for depth := 0; depth < 11; depth++ {
+		b := NewBoard()
+		fmt.Println(depth, ":", Perft(b, depth))
+	}
+}

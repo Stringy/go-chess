@@ -46,14 +46,14 @@ func BitCount(n uint64) uint {
 	return uint(n)
 }
 
-//FirstOne returns the index of the first 1 bit in the bitboard
-func FirstOne(n uint64) uint {
+//LSB returns the index of the first 1 bit in the bitboard
+func LSB(n uint64) uint {
 	const Debruijn = uint64(0x07edd5e59a4e28c2)
 	return Index64[((n&-n)*Debruijn)>>58]
 }
 
-//LastOne returns the index of the last 1 bit in the bitboard
-func LastOne(n uint64) (result uint) {
+//MSB returns the index of the last 1 bit in the bitboard
+func MSB(n uint64) (result uint) {
 	result = 0
 	if n > 0xffffffff {
 		n >>= 32
@@ -72,8 +72,9 @@ func LastOne(n uint64) (result uint) {
 }
 
 //PrintBitboard prints a formatted bitstring of the bitboard
-func PrintBitboard(n uint64) {
+func BitboardToStr(n uint64) string {
 	grid := make([]byte, 64)
+	str := ""
 	for i := 0; i < 64; i++ {
 		if n&BitSet[i] != 0 {
 			grid[i] = '1'
@@ -83,11 +84,12 @@ func PrintBitboard(n uint64) {
 	}
 
 	for rank := 8; rank > 0; rank-- {
-		fmt.Print(" ", rank, " ")
+		str += fmt.Sprintf(" %d ", rank)
 		for file := 1; file < 9; file++ {
-			fmt.Print(string(grid[Index[file][rank]]))
+			str += string(grid[Index[file][rank]])
 		}
-		fmt.Println()
+		str += "\n"
 	}
-	fmt.Println("   abcdefgh")
+	str += "   abcdefgh\n"
+	return str
 }

@@ -12,6 +12,7 @@ import (
 type Searcher interface {
 	Search(*gen.Board, int) (gen.Move, int)
 	ParallelSearch(*gen.Board, int) (gen.Move, int)
+	PrintDebug()
 }
 
 type SearchResult struct {

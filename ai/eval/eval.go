@@ -43,6 +43,9 @@ func (e Evaluator) Eval(board *gen.Board) int {
 	for _, module := range e {
 		score += module.eval(board)
 	}
+	if board.NextMove == gen.BlackMove {
+		return -score
+	}
 	return score
 }
 

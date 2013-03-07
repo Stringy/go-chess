@@ -8,52 +8,29 @@ import (
 	"time"
 )
 
+const max_depth = 10
+
 func TestAlphaBeta(t *testing.T) {
 	fmt.Println("NOT PARALLEL ALPHA BETA")
 
-	for depth := 0; depth < 7; depth++ {
+	for depth := 0; depth < max_depth; depth++ {
 		t0 := time.Now()
 		board := gen.NewBoard()
 		ab := NewAlphaBeta()
-		_ = ab.Search(board, depth)
-		fmt.Printf("Searched %d nodes at depth %d in %v\n", ab.Nodes, depth, time.Since(t0))
-	}
-}
-
-func TestCCAlphaBeta(t *testing.T) {
-	fmt.Println("PARALLEL ALPHA BETA")
-	stop := make(chan struct{})
-
-	for depth := 0; depth < 7; depth++ {
-		t0 := time.Now()
-		ab := NewAlphaBeta()
-		board := gen.NewBoard()
-		_ = ab.ParallelSearch(board, depth, stop)
+		_, _ = ab.Search(board, depth)
 		fmt.Printf("Searched %d nodes at depth %d in %v\n", ab.Nodes, depth, time.Since(t0))
 	}
 }
 
 func TestPVSearch(t *testing.T) {
 	fmt.Println("NOT PARALLEL PRINCIPAL VARIATION SEARCH")
-	pvs := NewPVSearch(&eval.StaticHeuristic{})
+	pvs := NewPVSearch(eval.BasicEvaluator)
 
-	for depth := 0; depth < 7; depth++ {
+	for depth := 0; depth < max_depth; depth++ {
 		t0 := time.Now()
 		board := gen.NewBoard()
-		_ = pvs.Search(board, depth)
-		fmt.Printf("Searched %d nodes at depth %d in %v\n", pvs.Nodes, depth, time.Since(t0))
-	}
-}
-
-func TestCCPVSearch(t *testing.T) {
-	fmt.Println("PARALLEL PRINCIPAL VARIATION SEARCH")
-	pvs := NewPVSearch(&eval.StaticHeuristic{})
-
-	stop := make(chan struct{})
-	for depth := 0; depth < 7; depth++ {
-		t0 := time.Now()
-		board := gen.NewBoard()
-		_ = pvs.ParallelSearch(board, depth, stop)
+		pvs = NewPVSearch(eval.BasicEvaluator)
+		_, _ = pvs.Search(board, depth)
 		fmt.Printf("Searched %d nodes at depth %d in %v\n", pvs.Nodes, depth, time.Since(t0))
 	}
 }

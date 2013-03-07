@@ -39,7 +39,7 @@ var (
 	MaskBD = make([]uint64, 2)
 	MaskCE = make([]uint64, 2)
 
-	CharBitSet = make([]byte, 8)
+	ByteBitSet = make([]byte, 8)
 
 	RankShift = []int{
 		1, 1, 1, 1, 1, 1, 1, 1,
@@ -105,7 +105,7 @@ var (
 //InitialiseAllMasks initialises all masks to be used in the move generation
 //process 	
 func InitialiseAllMasks() {
-	initialiseCharBitSet()
+	initialiseByteBitSet()
 	initialiseRankMask()
 	initialiseFileMask()
 	initialiseDiagA8H1()
@@ -179,10 +179,10 @@ func initialiseRankMask() {
 	}
 }
 
-func initialiseCharBitSet() {
-	CharBitSet[0] = 1
+func initialiseByteBitSet() {
+	ByteBitSet[0] = 1
 	for i := 1; i < 8; i++ {
-		CharBitSet[i] = CharBitSet[i-1] << 1
+		ByteBitSet[i] = ByteBitSet[i-1] << 1
 	}
 }
 
@@ -224,8 +224,8 @@ func initialiseDiagA8H1() {
 	}
 }
 
-//initialiseDiagA8H1Magic initialises the DiagA8HMagic array with masks indexed
-//by square
+//initialiseDiagA8H1Magic initialises the DiagA8HMagic array with magic numbers
+//for the A8H1 diagonal move generation
 func initialiseDiagA1H8Magic() {
 	for file := 1; file < 9; file++ {
 		for rank := 1; rank < 9; rank++ {
@@ -257,36 +257,34 @@ func initialiseFileMagic() {
 }
 
 //initialiseGeneralSlidingAttacks initialises the GeneralSlidingAttacks array
-//indexed by square
+//indexed by square and position on rank/diagonal
 func initialiseGeneralSlidingAttacks() {
 	for sq := 0; sq < 8; sq++ {
 		for state6 := 0; state6 < 64; state6++ {
 			state8 := state6 << 1
 			attBit := byte(0)
 			if sq < 7 {
-				attBit |= CharBitSet[sq+1]
+				attBit |= ByteBitSet[sq+1]
 			}
 			slide := sq + 2
-			for slide < 8 {
-				if (int(CharBitSet[slide-1]) &^ state8) != 0 {
-					attBit |= CharBitSet[slide]
+			for ; slide < 8; slide++ {
+				if (int(ByteBitSet[slide-1]) &^ state8) != 0 {
+					attBit |= ByteBitSet[slide]
 				} else {
 					break
 				}
-				slide++
 			}
 
 			if sq > 0 {
-				attBit |= CharBitSet[sq-1]
+				attBit |= ByteBitSet[sq-1]
 			}
 			slide = sq - 2
-			for slide >= 0 {
-				if (int(CharBitSet[slide+1]) &^ state8) != 0 {
-					attBit |= CharBitSet[slide]
+			for ; slide >= 0; slide-- {
+				if (int(ByteBitSet[slide+1]) &^ state8) != 0 {
+					attBit |= ByteBitSet[slide]
 				} else {
 					break
 				}
-				slide--
 			}
 			GeneralSlidingAttacks[sq][state6] = attBit
 		}
@@ -502,7 +500,7 @@ func initialiseRankAttacks(sq, state int) {
 func initialiseFileAttacks(sq, state int) {
 	FileAttacks[sq][state] = 0x0
 	for attbit := 0; attbit < 8; attbit++ {
-		if (GeneralSlidingAttacks[8-Ranks[sq]][state] & CharBitSet[attbit]) != 0 {
+		if (GeneralSlidingAttacks[8-Ranks[sq]][state] & ByteBitSet[attbit]) != 0 {
 			FileAttacks[sq][state] |= BitSet[Index[Files[sq]][8-attbit]]
 		}
 	}
@@ -512,7 +510,7 @@ func initialiseA1H8Masks(sq, state int) {
 	DiagA1H8Attacks[sq][state] = 0x0
 	for attbit := 0; attbit < 8; attbit++ {
 		pos := int(math.Min(float64(Files[sq]-1), float64(Ranks[sq]-1)))
-		if (GeneralSlidingAttacks[pos][state] & CharBitSet[attbit]) != 0 {
+		if (GeneralSlidingAttacks[pos][state] & ByteBitSet[attbit]) != 0 {
 			diag := Files[sq] - Ranks[sq]
 			var file, rank int
 			if diag < 0 {
@@ -533,7 +531,7 @@ func initialiseA8H1Masks(sq, state int) {
 	DiagA8H1Attacks[sq][state] = 0x0
 	for attbit := 0; attbit < 8; attbit++ {
 		pos := int(math.Min(float64(8-Ranks[sq]), float64(Files[sq]-1)))
-		if (GeneralSlidingAttacks[pos][state] & CharBitSet[attbit]) != 0 {
+		if (GeneralSlidingAttacks[pos][state] & ByteBitSet[attbit]) != 0 {
 			diag := Files[sq] + Ranks[sq]
 			var file, rank int
 			if diag < 10 {

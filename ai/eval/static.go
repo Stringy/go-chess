@@ -157,7 +157,7 @@ func (s *StaticHeuristic) evalWhitePawns(b *gen.Board) int {
 	twpawns := b.WhitePawns
 	tscore := 0
 	for twpawns != 0 {
-		sq := gen.FirstOne(twpawns)
+		sq := gen.LSB(twpawns)
 		//passed pawns
 		tscore += WhitePawnTable[sq]
 		tscore += PawnOpponentDistance[Distance[sq][s.bkingsq]]
@@ -210,9 +210,9 @@ func (s StaticHeuristic) evalWhiteRooks(b *gen.Board) int {
 	twrooks := b.WhiteRooks
 	tscore := s.evalGenericWhitePiece(twrooks, RookTable, RookDistance)
 	for twrooks != 0 {
-		sq := gen.FirstOne(twrooks)
+		sq := gen.LSB(twrooks)
 		if gen.FileMask[sq]&s.wpassedpawns != 0 {
-			if sq < gen.LastOne(gen.FileMask[sq]&s.wpassedpawns) {
+			if sq < gen.MSB(gen.FileMask[sq]&s.wpassedpawns) {
 				tscore += RookPassedPawnBonus
 			}
 		}
@@ -242,7 +242,7 @@ func (s *StaticHeuristic) evalBlackPawns(b *gen.Board) int {
 	tbpawns := b.BlackPawns
 	tscore := 0
 	for tbpawns != 0 {
-		sq := gen.FirstOne(tbpawns)
+		sq := gen.LSB(tbpawns)
 		//passed pawns
 		tscore += BlackPawnTable[sq]
 		tscore += PawnOpponentDistance[Distance[sq][s.wkingsq]]
@@ -295,9 +295,9 @@ func (s StaticHeuristic) evalBlackRooks(b *gen.Board) int {
 	tbrooks := b.BlackRooks
 	tscore := s.evalGenericBlackPiece(tbrooks, RookTable, RookDistance)
 	for tbrooks != 0 {
-		sq := gen.FirstOne(tbrooks)
+		sq := gen.LSB(tbrooks)
 		if gen.FileMask[sq]&s.bpassedpawns != 0 {
-			if sq < gen.LastOne(gen.FileMask[sq]&s.bpassedpawns) {
+			if sq < gen.MSB(gen.FileMask[sq]&s.bpassedpawns) {
 				tscore += RookPassedPawnBonus
 			}
 		}
@@ -327,7 +327,7 @@ func (s StaticHeuristic) evalGenericWhitePiece(pieces uint64, values, distances 
 	temp := pieces
 	score := 0
 	for temp != 0 {
-		sq := gen.FirstOne(temp)
+		sq := gen.LSB(temp)
 		score += values[sq]
 		score += distances[Distance[sq][s.bkingsq]]
 		temp ^= gen.BitSet[sq]
@@ -343,7 +343,7 @@ func (s StaticHeuristic) evalGenericBlackPiece(pieces uint64, values, distances 
 	temp := pieces
 	score := 0
 	for temp != 0 {
-		sq := gen.FirstOne(temp)
+		sq := gen.LSB(temp)
 		score += values[Mirror[sq]]
 		score += distances[Distance[sq][s.wkingsq]]
 		temp ^= gen.BitSet[sq]

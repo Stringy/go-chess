@@ -4,29 +4,26 @@
 //Any further than this must be extended outside of this package. 
 package gen
 
-import (
-	"io"
-	"io/ioutil"
-	"log"
-	"os"
-)
+import ()
 
-var (
-	logger = log.New(ioutil.Discard, "", 0)
-)
+var ()
 
 // init Initialises all global data including attack masks
 func init() {
 	InitAllData()        //init globals
 	InitialiseAllMasks() //init attack masks
-	file, err := os.Open("gen.log")
-	if err != nil {
-		//do nothing
-	} else {
-		SetLogger(file)
-	}
 }
 
-func SetLogger(w io.Writer) {
-	logger = log.New(w, "gen", log.LstdFlags|log.Lmicroseconds)
+func Perft(b *Board, depth int) int {
+	nodes := 0
+	if depth == 0 {
+		return 1
+	}
+	moves := GenerateAllMoves(b)
+	for _, move := range moves {
+		b.MakeMove(&move)
+		nodes += Perft(b, depth-1)
+		b.UnmakeMove(&move)
+	}
+	return nodes
 }

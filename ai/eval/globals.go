@@ -187,8 +187,8 @@ func initialiseGlobals() {
 	initialiseKingShields()
 }
 
-//initDistanceArray initialises the distance array with distances from square a
-//to square b
+//initDistanceArray initialises the distance array with distances from square i
+//to square sq
 func initDistanceArray() {
 	Distance = make([][]int, 64)
 	for i := 0; i < 64; i++ {
