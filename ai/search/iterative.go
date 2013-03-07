@@ -5,8 +5,6 @@ import (
 	"chess/ai/gen"
 
 	"fmt"
-
-	//	"math"
 	"time"
 )
 
@@ -73,14 +71,4 @@ func (iter *IterativeSearch) PrintDebug() {
 		fmt.Print(depth, ":\t", nodes)
 		fmt.Printf(", %v\n", iter.times[depth])
 	}
-	// for i, ply := range iter.Pvs.PVSLine.Table {
-	// 	if ply[i] != 0 {
-	// 		fmt.Println("Ply", i)
-	// 	}
-	// 	for _, move := range ply {
-	// 		if move != 0 {
-	// 			fmt.Print(move.Print())
-	// 		}
-	// 	}
-	// }
 }

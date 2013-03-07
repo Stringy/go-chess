@@ -4,8 +4,6 @@ import (
 	"chess/ai/eval"
 	"chess/ai/gen"
 	"fmt"
-	"math"
-	"strings"
 	"sync"
 	"time"
 )
@@ -86,58 +84,6 @@ func (pvs *PVSearch) Search(b *gen.Board, depth int) (gen.Move, int) {
 	debugNodes = append(debugNodes, pvs.Nodes)
 	debugResults = append(debugResults, val)
 	return pvs.PVSLine.Table[0][0], val
-}
-
-func (pvs *PVSearch) ParallelSearch(b *gen.Board, depth int) (gen.Move, int) {
-	res := make(chan SearchResult)
-	stop := make(chan struct{})
-	moves := gen.GenerateAllMoves(b)
-	rescount := 0
-
-	resetDebugSymbols()
-	t0 := time.Now()
-	pvs.sortMoves(b, moves, 0, depth, true)
-
-	for _, move := range moves {
-		b.MakeMove(&move)
-		go func() {
-			res <- SearchResult{move,
-				pvs.alpha_beta_pvs(b.Clone(), 1, depth-1, -int(eval.CheckMate), int(eval.CheckMate), stop)}
-		}()
-		b.UnmakeMove(&move)
-	}
-
-	//	alpha := -math.MaxInt32
-	beta := math.MaxInt32
-	alpha := -math.MaxInt32
-	bestscore := beta
-	for {
-		select {
-		case r := <-res:
-			rescount++
-			debugNodes = append(debugNodes, pvs.Nodes)
-			debugResults = append(debugResults, r.score)
-			if r.score < bestscore {
-				bestscore = r.score
-			}
-			if r.score > alpha {
-				alpha = -r.score
-				pvs.PVSLine.Update(0, r.move)
-			}
-			if alpha >= beta {
-				close(stop)
-				timeTaken = time.Since(t0)
-				return pvs.PVSLine.Table[0][0], bestscore
-			}
-		default:
-
-		}
-		if rescount == len(moves) {
-			timeTaken = time.Since(t0)
-			return pvs.PVSLine.Table[0][0], bestscore
-		}
-	}
-	return pvs.PVSLine.Table[0][0], 0 //never reached, compiler compliance
 }
 
 //pvs.alpha_beta_search is the actual search algorithm. It is a recursive algorithm which keeps a record of the 
@@ -291,24 +237,6 @@ func (pvs *PVSearch) PrintDebug() {
 			fmt.Print(move.Print())
 		}
 	}
-}
-
-func IntToStr(n int) string {
-	s := fmt.Sprintf("%d", n)
-	l := len(s)
-	x := l / 3
-	if l%3 > 0 {
-		x++
-	}
-	slice := make([]string, x)
-	i := len(s) - 3
-	for j := 1; i > 0; i -= 3 {
-		slice[x-j] = s[i : i+3]
-		j++
-	}
-	j := i + 3
-	slice[0] = s[:j]
-	return strings.Join(slice, ",")
 }
 
 func toFront(move gen.Move, moves []gen.Move, i int) []gen.Move {
