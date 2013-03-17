@@ -295,36 +295,3 @@ func initialiseKingShields() {
 		}
 	}
 }
-
-//Value returns the evaluation value of a piece type based of its piece code
-func Value(piece byte) uint {
-	switch piece {
-	case gen.WhitePawn:
-		fallthrough
-	case gen.BlackPawn:
-		return PawnValue
-	case gen.WhiteRook:
-		fallthrough
-	case gen.BlackRook:
-		return RookValue
-	case gen.WhiteKnight:
-		fallthrough
-	case gen.BlackKnight:
-		return KnightValue
-	case gen.WhiteBishop:
-		fallthrough
-	case gen.BlackBishop:
-		return BishopValue
-	case gen.WhiteQueen:
-		fallthrough
-	case gen.BlackQueen:
-		return QueenValue
-	case gen.WhiteKing:
-		fallthrough
-	case gen.BlackKing:
-		return KingValue
-	default:
-
-	}
-	return 0
-}

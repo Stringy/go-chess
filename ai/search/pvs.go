@@ -9,22 +9,26 @@ import (
 )
 
 var (
-	debugNodes     []int
+	debugNodes     []int //debug node count for latest search
 	debugResults   []int
-	evaluatedNodes int
-	alphaCutoffs   int
-	betaCutoffs    int
-	nullMoves      int
-	timeTaken      time.Duration
-	NullReduction  = 4
-	NullLim        = gen.KnightValue - 1
+	evaluatedNodes int                   //number of nodes evaluated
+	alphaCutoffs   int                   //number of alpha cut offs
+	betaCutoffs    int                   //number of beta nodes
+	nullMoves      int                   //number of null moves 
+	timeTaken      time.Duration         //time of a single search
+	NullReduction  = 4                   //depth reduction from null moves
+	NullLim        = gen.KnightValue - 1 //material limit under which no null moves will be made
 )
 
+//PVSTable is a thread safe structure for remembering
+//the principal variation at various depths
 type PVSTable struct {
 	Table [][]gen.Move
 	mutex *sync.RWMutex
 }
 
+//PVSTable.Update updates the best moves found depending on 
+//the ply at which a new best move has been moves
 func (pvs *PVSTable) Update(ply int, move gen.Move) {
 	pvs.mutex.Lock()
 	pvs.Table[ply][ply] = move
@@ -34,17 +38,19 @@ func (pvs *PVSTable) Update(ply int, move gen.Move) {
 	pvs.mutex.Unlock()
 }
 
+//PVSearch is a structure which conforms to the Searcher interface
 type PVSearch struct {
-	Evaluator    eval.Evaluator
-	Nodes        int
-	Ply          int
-	PVSLine      *PVSTable
-	SearchPV     bool
-	NullSearch   bool
-	WhiteHistory [][]int
-	BlackHistory [][]int
+	Evaluator    eval.Evaluator //for evaluating nodes
+	Nodes        int            //number of nodes searched
+	Ply          int            //current ply of the search in progress
+	PVSLine      *PVSTable      //table containing best moves indexed by ply
+	SearchPV     bool           //flag for searching the principal variation
+	NullSearch   bool           //flag for null moves
+	WhiteHistory [][]int        //White history heuristic
+	BlackHistory [][]int        //Black history heuristic
 }
 
+//NewPVSTable initialises a new table for the principal variation
 func NewPVSTable() *PVSTable {
 	pvs := new(PVSTable)
 	pvs.Table = make([][]gen.Move, 64)
@@ -55,6 +61,8 @@ func NewPVSTable() *PVSTable {
 	return pvs
 }
 
+//NewPVSearch initialises and new principal variation search
+// structure
 func NewPVSearch(evaluator eval.Evaluator) *PVSearch {
 	searcher := new(PVSearch)
 	searcher.SearchPV = true
@@ -73,7 +81,7 @@ func NewPVSearch(evaluator eval.Evaluator) *PVSearch {
 
 //pvs.Search is the entry point to the searching algorithm 
 //satisfies search.Searcher interface
-func (pvs *PVSearch) Search(b *gen.Board, depth int) (gen.Move, int) {
+func (pvs *PVSearch) Search(b *gen.Board, depth int) (*gen.Move, int) {
 	stop := make(chan struct{})
 	resetDebugSymbols()
 
@@ -83,12 +91,13 @@ func (pvs *PVSearch) Search(b *gen.Board, depth int) (gen.Move, int) {
 	timeTaken = time.Since(t0)
 	debugNodes = append(debugNodes, pvs.Nodes)
 	debugResults = append(debugResults, val)
-	return pvs.PVSLine.Table[0][0], val
+	return &pvs.PVSLine.Table[0][0], val
 }
 
 //pvs.alpha_beta_search is the actual search algorithm. It is a recursive algorithm which keeps a record of the 
 //principal variation of the previous iterations
 //moves are sorted before recursive searches to speed up the search so better nodes are found early. 
+//null moves are made to attempt to discover beta cut offs early.
 func (pvs *PVSearch) alpha_beta_pvs(b *gen.Board, ply, depth, alpha, beta int, stop chan struct{}) int {
 	if depth <= 0 {
 		pvs.SearchPV = false
@@ -111,6 +120,7 @@ func (pvs *PVSearch) alpha_beta_pvs(b *gen.Board, ply, depth, alpha, beta int, s
 		if (b.NextMove == gen.BlackMove && (b.BMaterial > NullLim)) ||
 			(b.NextMove == gen.WhiteMove && (b.WMaterial > NullLim)) {
 			if !b.IsCheck() {
+				pvs.Nodes++
 				pvs.NullSearch = false //prevent two null moves in a row
 				b.NullMove()           //make null move
 				nullMoves++
@@ -129,10 +139,9 @@ func (pvs *PVSearch) alpha_beta_pvs(b *gen.Board, ply, depth, alpha, beta int, s
 	moves := gen.GenerateAllMoves(b)
 	movesfound := 0
 	pvs.sortMoves(b, moves, ply, depth, pvs.SearchPV)
-	//	fmt.Println(moves)
 	for _, move := range moves {
 		b.MakeMove(&move)
-		if !b.IsOtherKingAttacked() {
+		if !b.IsOtherPlayerChecked() {
 			pvs.Nodes++
 			if movesfound == 0 {
 				score = -pvs.alpha_beta_pvs(b, ply+1, depth-1, -alpha-1, -alpha, stop)
@@ -204,6 +213,8 @@ func (pvs *PVSearch) sortMoves(b *gen.Board, moves []gen.Move, ply, depth int, p
 	}
 }
 
+//resetDebugSymbols resets all debug information to zero
+//used before any new search
 func resetDebugSymbols() {
 	debugNodes = make([]int, 0)
 	debugResults = make([]int, 0)
@@ -212,6 +223,8 @@ func resetDebugSymbols() {
 	betaCutoffs = 0
 }
 
+//PVSearch.PrintDebug prints debug information about the latest search
+//including total nodes, alpha/beta/absolute nodes and null moves
 func (pvs *PVSearch) PrintDebug() {
 	total := 0
 	for _, num := range debugNodes {
@@ -239,6 +252,8 @@ func (pvs *PVSearch) PrintDebug() {
 	}
 }
 
+//toFront takes a slice of moves, a move and its index in the slice and brings the move
+//to the front, as a way of ordering the slice
 func toFront(move gen.Move, moves []gen.Move, i int) []gen.Move {
 	newslice := make([]gen.Move, len(moves))
 	newslice[0] = move

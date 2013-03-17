@@ -364,6 +364,8 @@ func (k *KingModule) debug() {
 	fmt.Println("Score:", k.score)
 }
 
+//numAttackedPieces returns the number of pieces attacked on the target
+//bitmap used for determining pins/forks and number of defended/attacked pieces
 func numAttackedPieces(target uint64, mask uint64) int {
 	return int(gen.BitCount(mask & target))
 }

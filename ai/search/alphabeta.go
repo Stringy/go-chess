@@ -19,6 +19,7 @@ type AlphaBeta struct {
 	timeTaken time.Duration
 }
 
+//NewAlphaBeta returns an initialised AlphaBeta searcher
 func NewAlphaBeta() *AlphaBeta {
 	ab := new(AlphaBeta)
 	ab.Evaluator = eval.BasicEvaluator
@@ -57,50 +58,6 @@ func (a *AlphaBeta) Search(b *gen.Board, depth int) (gen.Move, int) {
 	return bestmove, 0
 }
 
-func (a AlphaBeta) ParallelSearch(b *gen.Board, depth int) (gen.Move, int) {
-	res := make(chan SearchResult)
-	stop := make(chan struct{})
-	moves := gen.GenerateAllMoves(b)
-
-	for _, move := range moves {
-		b.MakeMove(&move)
-		go a.ccSearch(b.Clone(), move, depth-1, res, stop)
-		b.UnmakeMove(&move)
-	}
-
-	bestscore := int(eval.CheckMate)
-	bestmove := gen.Move(0)
-	alpha := -int(eval.CheckMate)
-	beta := int(eval.CheckMate)
-	rescount := 0
-	//	fmt.Println(len(moves))
-
-	for {
-		select {
-		case r := <-res:
-			rescount++
-			if -r.score < bestscore {
-				bestscore = -r.score
-				bestmove = r.move
-			}
-			alpha = int(math.Max(float64(alpha), float64(r.score)))
-			if alpha >= beta {
-				close(stop)
-				return bestmove, bestscore
-			}
-		default:
-			if rescount == len(moves) {
-				return bestmove, bestscore
-			}
-		}
-	}
-	return bestmove, 0
-}
-
-func (a AlphaBeta) ccSearch(b *gen.Board, move gen.Move, depth int, res chan SearchResult, stop chan struct{}) {
-	res <- SearchResult{move, a.alpha_beta(b, -int(eval.CheckMate), int(eval.CheckMate), depth, stop)}
-}
-
 //alpha_beta is a standard alpha beta pruning algorithm. 
 //it searches based on the current turn and based on narrowing the search window
 //through the use of alpha beta values
@@ -122,7 +79,7 @@ func (s *AlphaBeta) alpha_beta(board *gen.Board, a, b, depth int, stop chan stru
 		moves := gen.GenerateAllMoves(board)
 		for _, move := range moves {
 			board.MakeMove(&move)
-			if !board.IsOtherKingAttacked() {
+			if !board.IsOtherPlayerChecked() {
 				a = int(math.Max(float64(a), float64(s.alpha_beta(board, a, b, depth-1, stop))))
 				board.UnmakeMove(&move)
 				if b <= a {
@@ -137,7 +94,7 @@ func (s *AlphaBeta) alpha_beta(board *gen.Board, a, b, depth int, stop chan stru
 		moves := gen.GenerateAllMoves(board)
 		for _, move := range moves {
 			board.MakeMove(&move)
-			if !board.IsOtherKingAttacked() {
+			if !board.IsOtherPlayerChecked() {
 				b = int(math.Min(float64(b), float64(s.alpha_beta(board, a, b, depth-1, stop))))
 				board.UnmakeMove(&move)
 				if b <= a {

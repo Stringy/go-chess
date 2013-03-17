@@ -24,6 +24,7 @@ var (
 	DiagA1H8Attacks = [64][64]uint64{} //for bishops
 	DiagA8H1Attacks = [64][64]uint64{} //for bishops
 
+	//rank/file/diag masks and magics
 	RankMask      = make([]uint64, 64)
 	FileMask      = make([]uint64, 64)
 	FileMagic     = make([]uint64, 64)
@@ -34,13 +35,16 @@ var (
 
 	GeneralSlidingAttacks = [8][64]byte{}
 
+	//castling square masks
 	MaskEG = make([]uint64, 2)
 	MaskFG = make([]uint64, 2)
 	MaskBD = make([]uint64, 2)
 	MaskCE = make([]uint64, 2)
 
+	//individual bits set in a byte
 	ByteBitSet = make([]byte, 8)
 
+	//static rank shift for magic bitboards
 	RankShift = []int{
 		1, 1, 1, 1, 1, 1, 1, 1,
 		9, 9, 9, 9, 9, 9, 9, 9,
@@ -179,6 +183,8 @@ func initialiseRankMask() {
 	}
 }
 
+//initialiseByteBitSet initialises the ByteBitSet array with
+//bytes containing a single 1 bit
 func initialiseByteBitSet() {
 	ByteBitSet[0] = 1
 	for i := 1; i < 8; i++ {

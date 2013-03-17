@@ -14,6 +14,9 @@ func init() {
 	InitialiseAllMasks() //init attack masks
 }
 
+//Perft is a move generator testing function
+//used to determine the number of nodes per second
+//which can be generated in this engine
 func Perft(b *Board, depth int) int {
 	nodes := 0
 	if depth == 0 {

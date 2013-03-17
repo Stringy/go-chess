@@ -24,6 +24,7 @@ type Board struct {
 	BlackQueens,
 	BlackKing uint64
 
+	//all pieces masks
 	WhitePieces     uint64
 	BlackPieces     uint64
 	OccupiedSquares uint64
@@ -62,6 +63,8 @@ type Board struct {
 	BMaterial int
 }
 
+//New Board returns a pointer to an initialised board
+//with the standard chess start position
 func NewBoard() *Board {
 	var board Board
 	board.Init()
@@ -220,7 +223,7 @@ func (b *Board) PrintBoard() {
 
 //Board.Clone creates a copy of the board
 //This is primarily used to pass distinct copies to go routines
-//for concurrent generation.
+//for safer searching.
 func (b *Board) Clone() *Board {
 	clone := new(Board)
 
@@ -257,13 +260,14 @@ func (b *Board) Clone() *Board {
 
 //IsOtherKingAttacked returns true if the opponent king
 //is being attacked by any piece. 
-func (b *Board) IsOtherKingAttacked() bool {
+func (b *Board) IsOtherPlayerChecked() bool {
 	if b.NextMove == BlackMove {
 		return b.isAttacked(b.WhiteKing, BlackMove)
 	}
 	return b.isAttacked(b.BlackKing, WhiteMove)
 }
 
+//IsCheck determined whether the player to move is in check or not
 func (b *Board) IsCheck() bool {
 	if b.NextMove == BlackMove {
 		return b.isAttacked(b.BlackKing, WhiteMove)
@@ -271,6 +275,8 @@ func (b *Board) IsCheck() bool {
 	return b.isAttacked(b.WhiteKing, BlackMove)
 }
 
+//IsCheckMate returns true if the current player to move is checkmated, 
+//else returns false
 func (b *Board) IsCheckMate() bool {
 	if b.NextMove == BlackMove {
 		if !b.isAttacked(b.BlackKing, WhiteMove) {
@@ -306,6 +312,7 @@ func (b *Board) IsCheckMate() bool {
 	return false
 }
 
+//NullMove makes a null move on the board, that is changes the turn
 func (b *Board) NullMove() {
 	if b.NextMove == WhiteMove {
 		b.NextMove = BlackMove

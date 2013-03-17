@@ -52,6 +52,7 @@ const (
 )
 
 var (
+	//A mapping of normal square strings to their respective index
 	SquareMap = map[string]byte{
 		"A1": 0, "A2": 8, "A3": 16, "A4": 24, "A5": 32, "A6": 40, "A7": 48, "A8": 56,
 		"B1": 1, "B2": 9, "B3": 17, "B4": 25, "B5": 33, "B6": 41, "B7": 49, "B8": 57,

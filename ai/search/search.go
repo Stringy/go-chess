@@ -12,7 +12,7 @@ import (
 //Searcher interface is to provide polymorphism to allow for 
 //different search algorithms to be easily plugged in higher up
 type Searcher interface {
-	Search(*gen.Board, int) (gen.Move, int)
+	Search(*gen.Board, int) (*gen.Move, int)
 	PrintDebug()
 }
 

@@ -21,68 +21,20 @@ var (
 	twoPlayer = flag.Bool("twoplayer", false, "Two humans fight to the death")
 	depth     = 4
 
-	Players     = make([]Player, 2)
+	Players     = make([]ai.Player, 2)
 	GameHistory = make([]gen.Move, 500)
 	MoveCount   = 0
 	currentTurn = 0
 
-	playerOne Player
-	playerTwo Player
+	playerOne ai.Player
+	playerTwo ai.Player
 
 	evaluator = eval.BasicEvaluator
 )
 
-const ()
-
-type Player interface {
-	GetMove(b *gen.Board) gen.Move
-}
-
-type HumanPlayer struct{}
-
-type AIPlayer struct{}
-
-func main() {
-	Initialise()
-	defer cleanUp()
-
-	fmt.Println("Aperture Science Simulation of Heuristic Analysis Techniques")
-	fmt.Println("A.S.S.H.A.T")
-	var board gen.Board
-	var move gen.Move
-
-	board.Init()
-
-	for {
-		stop := make(chan struct{})
-		board.PrintBoard()
-		if currentTurn == 0 { //human
-			go ai.PonderUntilInput(&board, stop)
-		}
-		move = Players[currentTurn].GetMove(&board)
-		board.MakeMove(&move)
-		currentTurn = (currentTurn + 1) % 2
-		GameHistory[MoveCount] = move
-		MoveCount++
-		close(stop)
-	}
-}
-
-func cleanUp() {
-	if *mem != "" {
-		f, err := os.Create(*mem)
-		if err != nil {
-			os.Exit(1)
-		}
-		pprof.WriteHeapProfile(f)
-		f.Close()
-		return
-	}
-	pprof.StopCPUProfile()
-}
-
-func Initialise() {
-
+//init is run before the main func
+//initialises players and depth from command line args
+func init() {
 	flag.Parse()
 	if *cpu != "" {
 		f, err := os.Create(*cpu)
@@ -97,17 +49,82 @@ func Initialise() {
 	}
 
 	if *twoPlayer {
-		playerOne = HumanPlayer{}
-		playerTwo = HumanPlayer{}
-		Players = []Player{playerOne, playerTwo}
+		playerOne = &HumanPlayer{}
+		playerTwo = &HumanPlayer{}
+		Players = []ai.Player{playerOne, playerTwo}
 	} else {
-		playerOne = HumanPlayer{}
-		playerTwo = AIPlayer{}
-		Players = []Player{playerOne, playerTwo}
+		playerOne = &HumanPlayer{}
+		playerTwo = ai.NewAIPlayer()
+		Players = []ai.Player{playerOne, playerTwo}
 	}
 }
 
-func (h HumanPlayer) GetMove(b *gen.Board) gen.Move {
+func main() {
+	defer cleanUp()
+
+	fmt.Println("Aperture Science Simulation of Heuristic Analysis Techniques")
+	fmt.Println("A.S.S.H.A.T")
+	var board = gen.NewBoard()
+	var move *gen.Move
+	var ponderMoves = []*gen.Move{nil, nil}
+
+	for {
+		stop := make(chan struct{})
+		board.PrintBoard()
+
+		//start pondering in new goroutine
+		go Players[(currentTurn+1)%2].PonderUntilInput(board, stop, ponderMoves[(currentTurn+1)%2])
+
+		//if current player discovered solution while pondering last turn
+		//make that move
+		if ponderMoves[currentTurn] != nil {
+			board.MakeMove(ponderMoves[currentTurn])
+			GameHistory[MoveCount] = *ponderMoves[currentTurn] //record game history
+		} else { //otherwise get new move
+			move = Players[currentTurn].GetBestMove(board, depth)
+			board.MakeMove(move)
+			GameHistory[MoveCount] = *move
+		}
+		ponderMoves[currentTurn] = nil      //reinitialise ponderMove to nil
+		currentTurn = (currentTurn + 1) % 2 //change turn
+		MoveCount++
+		close(stop)
+	}
+}
+
+//cleanUp simply writes a memory profile and/or stops CPU profiling, provided 
+//they have been requested
+func cleanUp() {
+	if *mem != "" {
+		f, err := os.Create(*mem)
+		if err != nil {
+			os.Exit(1)
+		}
+		pprof.WriteHeapProfile(f)
+		f.Close()
+		return
+	}
+	pprof.StopCPUProfile()
+}
+
+type HumanPlayer struct{}
+
+// ai.Player interface conformation
+// HumanPlayers don't need to ponder programmatically
+func (h *HumanPlayer) PonderUntilInput(_ *gen.Board, _ chan struct{}, _ *gen.Move) {
+	//humans ponder in their heads
+}
+
+//ai.Player interface conformation
+//Human players don't need to debug themselves
+func (h *HumanPlayer) Debug() {
+	//humans know what they're thinking
+}
+
+//HumanPlayer.GetBestMove implementing ai.Player.GetBestMove. Handles commands
+//and returns a move parsed from the command line. Will loop until a valid move 
+//is given 
+func (h *HumanPlayer) GetBestMove(b *gen.Board, _ int) *gen.Move {
 	move := gen.Move(0)
 	var cmd string
 	for {
@@ -120,7 +137,7 @@ func (h HumanPlayer) GetMove(b *gen.Board) gen.Move {
 				if i%5 == 0 {
 					fmt.Println()
 				}
-				fmt.Print(m.String(), ", ")
+				fmt.Print(m, ", ")
 			}
 			fmt.Println()
 		case "undo":
@@ -130,7 +147,11 @@ func (h HumanPlayer) GetMove(b *gen.Board) gen.Move {
 			MoveCount -= 1
 			b.UnmakeMove(&GameHistory[MoveCount])
 		case "debug":
-			ai.PrintDebug()
+			if *twoPlayer {
+				continue
+			} else {
+				Players[1].Debug()
+			}
 		case "eval":
 			score := evaluator.Eval(b)
 			evaluator.Debug()
@@ -150,19 +171,16 @@ func (h HumanPlayer) GetMove(b *gen.Board) gen.Move {
 			}
 			move, err := gen.NewMove(cmd, b)
 			if err == nil && move.IsLegalMove(b) {
-				return *move
+				return move
 			} else {
 				fmt.Println(err)
 			}
 		}
 	}
-	return move
+	return &move
 }
 
-func (a AIPlayer) GetMove(b *gen.Board) gen.Move {
-	return *ai.GetBestMove(*b, depth)
-}
-
+//help prints all of the commands and their respective details
 func help() {
 	fmt.Println("help     \tThis help text")
 	fmt.Println("generate \tgenerate all moves for the current position")

@@ -22,6 +22,9 @@ import (
 //    promotion = 4 bits
 type Move uint
 
+//IsLegalMove returns true if the generator has generated this move,
+//false otherwise. This is a simple way of determining whether the move
+//is allowed
 func (m *Move) IsLegalMove(b *Board) bool {
 	moves := GenerateAllMoves(b)
 	for _, move := range moves {
