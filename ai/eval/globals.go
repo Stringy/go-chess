@@ -110,6 +110,7 @@ var (
 		-10, 0, 0, 0, 0, 0, 0, -10,
 		-10, -10, -10, -10, -10, -10, -10, -10,
 	}
+
 	//mirror provides reverse indexing for all
 	//position value tables
 	Mirror = []int{

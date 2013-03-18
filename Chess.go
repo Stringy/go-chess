@@ -170,10 +170,14 @@ func (h *HumanPlayer) GetBestMove(b *gen.Board, _ int) *gen.Move {
 				continue
 			}
 			move, err := gen.NewMove(cmd, b)
-			if err == nil && move.IsLegalMove(b) {
-				return move
-			} else {
+			if err != nil {
 				fmt.Println(err)
+			} else {
+				if move.IsLegalMove(b) {
+					return move
+				} else {
+					fmt.Println("Invalid move for this position")
+				}
 			}
 		}
 	}
@@ -183,10 +187,11 @@ func (h *HumanPlayer) GetBestMove(b *gen.Board, _ int) *gen.Move {
 //help prints all of the commands and their respective details
 func help() {
 	fmt.Println("help     \tThis help text")
-	fmt.Println("generate \tgenerate all moves for the current position")
-	fmt.Println("undo     \tundo the last played move")
-	fmt.Println("debug    \tprint debug information for the last search")
-	fmt.Println("eval     \tprint evaluation information for the current position")
-	fmt.Println("print    \tprint the board")
-	fmt.Println("exit/quit\tquit the game")
+	fmt.Println("[move]   \tMake a move on the board")
+	fmt.Println("generate \tGenerate all moves for the current position")
+	fmt.Println("undo     \tUndo the last played move")
+	fmt.Println("debug    \tPrint debug information for the last search")
+	fmt.Println("eval     \tPrint evaluation information for the current position")
+	fmt.Println("print    \tPrint the board")
+	fmt.Println("exit/quit\tQuit the game")
 }

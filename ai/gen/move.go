@@ -4,6 +4,7 @@ import (
 	"fmt"
 	//	"strconv"
 	"errors"
+	"regexp"
 	"strings"
 )
 
@@ -35,20 +36,23 @@ func (m *Move) IsLegalMove(b *Board) bool {
 	return false
 }
 
+//NewMove returns a new move object based of a user command
+//and the current board
+//Validation of moves is not handled here
 func NewMove(cmd string, b *Board) (*Move, error) {
-	//	ranks := "abcdefgh"
+	exp := regexp.MustCompile("[a-hA-H][1-8][a-hA-H][1-8][kqrnKQRN]*")
 	var move Move
-	if len(cmd) > 5 || len(cmd) < 4 {
-		return nil, errors.New("Unimplemented or unknown move string")
+	if !exp.Match([]byte(cmd)) {
+		return nil, errors.New("Move Parsing Error: Unknown Move string")
 	}
 	move.Clear()
 	cmd = strings.ToUpper(cmd)
 	if to, ok := SquareMap[cmd[2:4]]; !ok {
-		return nil, errors.New("Unknown square for to coordinate")
+		return nil, errors.New("Unknown square for \"to\" coordinate")
 	} else {
 		move.SetTo(to)
 		if from, ok := SquareMap[cmd[:2]]; !ok {
-			return nil, errors.New("Unknown square for from coordinate")
+			return nil, errors.New("Unknown square for \"from\" coordinate")
 		} else {
 			move.SetFrom(from)
 		}
