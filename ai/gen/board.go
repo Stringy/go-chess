@@ -312,6 +312,37 @@ func (b *Board) IsCheckMate() bool {
 	return false
 }
 
+//isAttacked works out if a particular square is attacked by a specific piece type. 
+//
+//returns true if attacked, false otherwise
+func (b *Board) isAttacked(bits uint64, attacker byte) bool {
+	targ := bits
+	if attacker == BlackMove {
+		moves := generateAllBlackMoves(b)
+		for targ != 0 {
+			to := LSB(targ)
+			for _, move := range moves {
+				if uint(move.GetTo()) == to {
+					return true
+				}
+			}
+			targ ^= BitSet[to]
+		}
+	} else {
+		moves := generateAllWhiteMoves(b)
+		for targ != 0 {
+			to := LSB(targ)
+			for _, move := range moves {
+				if uint(move.GetTo()) == to {
+					return true
+				}
+			}
+			targ ^= BitSet[to]
+		}
+	}
+	return false
+}
+
 //NullMove makes a null move on the board, that is changes the turn
 func (b *Board) NullMove() {
 	if b.NextMove == WhiteMove {
